@@ -1,81 +1,42 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { Component } from 'react';
-import UserList from './componentes/UserList';
-import UserForm from './componentes/UserForm';
-import { Button, Input, Row, Col } from 'reactstrap';
-import logo from './logo.svg';
-import './App.css';
+import Menu from './componentes/Menu'
+import AppLogin from './componentes/AppLogin'
 
-
-
-
-
-
-function listaUsuarios(props) {
-  return (
-    <ul>
-      {this.props.users.map(u => {
-        return (
-          <User
-            key={u.id}
-            name={u.name}
-            email={u.email}
-          />
-        );
-      })
-      }
-    </ul>
-  );
-}
-
-function usuario(props) {
-  return (
-
-    <ul>
-
-    </ul>
-
-  );
-
-}
-
-
-
-class App extends React.Component {
-  constructor() {
-    super();
+class App extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      users: [
-        { id: 1, name: "perico", email: "perico@myfpschool.com" },
-        { id: 2, name: "juanico", email: "juanico@myfpschool.com" },
-        { id: 3, name: "andrés", email: "andrés@myfpschool.com" }
-      ]
-    };
+      menuItem: "UNO",
+      logged: false,
+    }
   }
 
+  changeMenu(item) {
+    this.setState({ menuItem: item })
+  }
 
-
-  handleOnAddUser(event) {
-    event.preventDefault();
-    let user = {
-      name: event.target.name.value,
-      email: event.target.email.value
-    };
-    let tmp = this.state.users;
-    tmp.push(user);
-    this.setState({
-      users: tmp
-    });
+  userLogin(telefono, password) {
+    if (telefono == "Myfpschool" && password == "2023") {
+      this.setState({ logged: true })
+    }
   }
   render() {
+    let obj = <></>
+
+    if (!this.state.logged) {
+      obj = <AppLogin
+        userLogin={(telefono, password) => this.userLogin(telefono, password)}
+      />
+    }
     return (
       <div className="App">
-        <div>
-          <p><strong>Añade usuarios</strong></p>
-          <UserList users={this.state.users} />
-          <UserForm onAddUser={(e) => this.handleOnAddUser(e)} />
-        </div>
+        <Menu menuItem={this.state.menuItem}
+          changeMenu={(item) => this.changeMenu(item)} />
+        {obj}
       </div>
     );
   }
+
 }
 export default App;
