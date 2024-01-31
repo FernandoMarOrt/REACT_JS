@@ -5,6 +5,19 @@ import "./App.css";
 
 function Botonera(props) {
 
+
+  const posicion = (i,j) =>{
+
+    console.log(i,j)
+    let posicionI = i;
+    let posicionJ = j;
+
+    if(color === "secondary"){
+      console
+    }
+   
+  }
+
   //COMPONENTE QUE RENDERIZA EL TABLERO
   let tablero = [];
   for (let i = 0; i < props.paneldamas.length; i++) {
@@ -14,9 +27,9 @@ function Botonera(props) {
 
       if ((i  % 2 === 0 && j % 2 ===1) || (i  % 2 === 1 && j % 2 ===0) ) {
         if(i > 4){
-          t.push(<Button color="success"/>)
+          t.push(<Button color="success" onClick={() => posicion(i,j,color)}/>)
         }else{
-          t.push(<Button color="secondary"/>)
+          t.push(<Button color="secondary" onClick={() => posicion(i,j)}/>)
         }
      
       }else{
@@ -36,8 +49,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //DEFINE EL ESTADO DE TU COMPONENTE PRINCIPAL
-      //Recuerda que si defines una tabla 8x8 tu estado será inválido.
       tablero: []
 
     };
@@ -49,7 +60,7 @@ class App extends Component {
     let t = []
     for (let i = 0; i < 8; i++) {
       let fila = []
-      for (let j = 0; j < 4; j++) {
+      for (let j = 0; j < 8; j++) {
         fila.push("secondary")
       }
       t.push(fila)

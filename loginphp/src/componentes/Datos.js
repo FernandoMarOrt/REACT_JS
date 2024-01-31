@@ -1,0 +1,1 @@
+export const PHPLOGIN = "http://localhost/Proyectos/REACTSV/login.php";
