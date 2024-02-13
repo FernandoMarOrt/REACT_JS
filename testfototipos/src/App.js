@@ -74,7 +74,7 @@ const Fototipo = (props) => {
             </CardTitle>
             <CardSubtitle className="mb-2 text-muted" tag="h6"     >
               <p>Su puntuación en el test fue de {props.puntuacion}</p>
-              <img src={imagenes} alt="Card cap"/>
+              <img src={imagenes} alt=""/>
             </CardSubtitle>
             <CardText>
               <p>{tipoPiel}</p>
@@ -106,12 +106,12 @@ class App extends Component {
       ocultar: false,
       mensaje: false,
       imagenes: [
-        "/img/tipo1.png",
-        "/img/tipo2.png",
-        "/img/tipo3.png",
-        "/img/tipo4.png",
-        "/img/tipo5.png",
-        "/img/tipo6.png",
+        "tipo1.png",
+        "tipo2.png",
+        "tipo3.png",
+        "tipo4.png",
+        "tipo5.png",
+        "tipo6.png",
       ],
     };
   }
