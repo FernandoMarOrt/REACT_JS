@@ -2,6 +2,8 @@ import React, { Component, useState } from "react";
 import { Button, Navbar, NavbarBrand, Card, CardBody, CardTitle, CardHeader, ListGroup, CardSubtitle, CardText, Col } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PREGUNTAS } from "./componentes/datos";
+import {RECUENTO} from './componentes/recuento';
+import axios from 'axios';
 import "./App.css";
 
 const Preguntas = (props) => {
@@ -93,7 +95,7 @@ class App extends Component {
     this.state = {
       preguntas: PREGUNTAS,
       puntuacion: 0,
-      fototipos: [0, 7, 21, 42, 68, 84, 100],
+      fototipos: [-1, 7, 21, 42, 68, 84, 100],
       respuestasDesactivadas: [],
       tipoPiel: [
         "Puntuación entre 0-7 -> TIPO DE PIEL I: Muy sensible a la luz solar",
@@ -115,6 +117,25 @@ class App extends Component {
       ],
     };
   }
+
+  guardarResultadosEnArchivo() {
+    const tipoFototipoCorregido = this.state.fotoTipo - 1;
+
+    axios.post(RECUENTO, JSON.stringify({
+      tipoFototipo: tipoFototipoCorregido,
+    }))
+    .then(res => {
+   
+      console.log(res.data); 
+      console.log(res.data.mensaje);
+ 
+    })
+    .catch(error => {
+      console.error('Error al enviar datos al servidor:', error);
+
+    });
+  }
+  
 
 
   respuesta(orden, valor) {
@@ -138,6 +159,7 @@ class App extends Component {
   resultados() {
     if (this.state.respuestasDesactivadas.length === this.state.preguntas.length) {
       this.setState({ ocultar: true });
+      this.guardarResultadosEnArchivo();
     } else {
       this.setState({ mensaje: true })
     }
@@ -171,7 +193,6 @@ class App extends Component {
         </Navbar>
         {obj}
         {obj2}
-
 
       </div>
     );
