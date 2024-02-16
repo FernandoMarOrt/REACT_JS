@@ -2,7 +2,6 @@ import React, { Component, useState } from "react";
 import { Button, Navbar, NavbarBrand, Card, CardBody, CardTitle, CardHeader, ListGroup, CardSubtitle, CardText, Col } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PREGUNTAS } from "./componentes/datos";
-import {RECUENTO} from './componentes/recuento';
 import axios from 'axios';
 import "./App.css";
 
@@ -51,14 +50,15 @@ const Fototipo = (props) => {
   const [imagenes, setImagenes] = useState("");
   const [fotoTipo, setFotoTipo] = useState(undefined);
   const [tipoPiel, setTipoPiel] = useState("");
+
   props.fototipos.map((f, i, arr) => {
 
     if (fotoTipo == undefined && f >= props.puntuacion && arr[i - 1] < props.puntuacion) {
-      setFotoTipo(i);
+      setFotoTipo(i); /*Este es*/
       setTipoPiel(props.tipoPiel[i - 1])
       setImagenes(props.imagenes[i - 1])
-
     }
+
   })
   return (
     <div>
@@ -76,7 +76,7 @@ const Fototipo = (props) => {
             </CardTitle>
             <CardSubtitle className="mb-2 text-muted" tag="h6"     >
               <p>Su puntuación en el test fue de {props.puntuacion}</p>
-              <img src={imagenes} alt=""/>
+              <img src={imagenes} alt="" />
             </CardSubtitle>
             <CardText>
               <p>{tipoPiel}</p>
@@ -115,27 +115,31 @@ class App extends Component {
         "tipo5.png",
         "tipo6.png",
       ],
+      resultadosTotales: [0, 0, 0, 0, 0, 0],
+      numerofototipo: null,
     };
   }
 
   guardarResultadosEnArchivo() {
-    const tipoFototipoCorregido = this.state.fotoTipo - 1;
-
-    axios.post(RECUENTO, JSON.stringify({
-      tipoFototipo: tipoFototipoCorregido,
-    }))
+    const resultadosTotales = this.state.resultadosTotales.slice(); // Utiliza slice para clonar el array
+  
+    axios({
+      method: 'post',
+      url: "./recuento",
+      data: {
+        array: resultadosTotales
+      }
+    })
     .then(res => {
-   
-      console.log(res.data); 
-      console.log(res.data.mensaje);
- 
+      console.log(res.data); // Aquí deberías ver la respuesta del servidor
+      console.log("RESULTADOOOOOOOSSSSSSS", resultadosTotales);
     })
     .catch(error => {
       console.error('Error al enviar datos al servidor:', error);
-
     });
   }
   
+
 
 
   respuesta(orden, valor) {
@@ -151,19 +155,32 @@ class App extends Component {
         respuestasDesactivadas: nuevasRespuestasDesactivadas,
       });
 
-      console.log(this.state.puntuacion)
     }
   }
-
 
   resultados() {
     if (this.state.respuestasDesactivadas.length === this.state.preguntas.length) {
-      this.setState({ ocultar: true });
-      this.guardarResultadosEnArchivo();
+      const fototipo = this.state.fototipos.findIndex(score => this.state.puntuacion <= score);
+      const numeroFototipo = fototipo >= 0 ? fototipo : null;
+  
+      // Actualizar el array resultadosTotales
+      if (numeroFototipo !== null) {
+        this.setState(prevState => ({
+          resultadosTotales: prevState.resultadosTotales.map((value, index) =>
+            index === numeroFototipo - 1 ? value + 1 : value
+          ),
+          ocultar: true,
+          numeroFototipo: numeroFototipo,
+        }), () => {
+          this.guardarResultadosEnArchivo();
+        });
+      }
     } else {
-      this.setState({ mensaje: true })
+      this.setState({ mensaje: true });
     }
   }
+  
+
 
 
   render() {
@@ -176,7 +193,12 @@ class App extends Component {
 
 
     if (this.state.ocultar) {
-      obj = <Fototipo puntuacion={this.state.puntuacion} fototipos={this.state.fototipos} tipoPiel={this.state.tipoPiel} imagenes={this.state.imagenes}/>
+      obj = <Fototipo puntuacion={this.state.puntuacion}
+        fototipos={this.state.fototipos}
+        tipoPiel={this.state.tipoPiel}
+        imagenes={this.state.imagenes}
+        numerofototipo={this.state.numerofototipo}
+      />
     }
 
     let obj2 = ""
