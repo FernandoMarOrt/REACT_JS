@@ -1,1 +1,0 @@
-export const RECUENTO = "http://localhost/Proyectos/REACTSV/recuento/index.php";
