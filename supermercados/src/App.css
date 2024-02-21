@@ -51,10 +51,11 @@ td {
 }
 
 
-h1{
+h1,h2{
   text-align: center;
 }
 
 ul,li{
   text-align: center;
+  list-style: none;
 }

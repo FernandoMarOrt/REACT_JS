@@ -1,12 +1,12 @@
 import React, { Component, useState } from "react";
-import { Button} from 'reactstrap';
+import { Button } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
 
 
 const Mapa = (props) => {
   const tablero = [];
- 
+
   for (let i = 0; i < props.mapa.length; i++) {
     const fila = props.mapa[i];
     const celdas = [];
@@ -14,7 +14,7 @@ const Mapa = (props) => {
     for (let j = 0; j < fila.length; j++) {
       celdas.push(
         <td key={j}  >
-          <Button  onClick={() => props.agregar(i,j)}  style={{backgroundColor:"white", color: "black"}}>{fila[j]}</Button>
+          <Button onClick={() => props.agregar(i, j)} style={{ backgroundColor: "white", color: "black" }}>{fila[j]}</Button>
         </td>
       );
     }
@@ -23,25 +23,28 @@ const Mapa = (props) => {
   }
 
   return (
-    <div>
+    <div> 
       <h1>Mapa poblacion</h1>
+      <h2>Poblacion total: {props.totalPoblacion}</h2>
       <table>
-      <tbody>{tablero}</tbody>
-    </table>
+        <tbody>{tablero}</tbody>
+      </table>
     </div>
-    
+
   );
 }
 
 
 const ListaSupermercados = (props) => {
+
+
   return (
     <div>
       <h1>Lista de Supermercados</h1>
       <ul>
         {props.listaSuper.map((supermercado, index) => (
           <li key={index}>
-            Supermercado en ({supermercado.i}, {supermercado.j})
+            Supermercado en ({supermercado.i}, {supermercado.j} con poblacion {supermercado.habitantes.sumaTotal})
           </li>
         ))}
       </ul>
@@ -67,36 +70,105 @@ class App extends Component {
         [1, 0, 12, 3, 0, 0, 21, 2, 2]
       ],
       supermercados: [],
+      poblacionTotal: 0,
     };
   }
 
-  agregarSupermercado = (i,j) => {
+  componentDidMount() {
+    this.calcularPoblacionTotal();
+  }
+  agregarSupermercado = (i, j) => {
     let copiaSuper = this.state.supermercados
-    let superRepetido = copiaSuper.find(s=> s.i === i && s.j ===j)
+    let superRepetido = copiaSuper.find(s => s.i === i && s.j === j)
 
-    if(superRepetido){
+    if (superRepetido) {
 
       console.log("Ya tienes este supermercado")
 
-    }else{
+    } else {
 
-      copiaSuper.push({ i, j});
-      this.setState({supermercados: copiaSuper });
+      copiaSuper.push({ i, j, habitantes: this.calcularSumas(i, j) });
+      this.setState({ supermercados: copiaSuper });
     }
-    console.log(copiaSuper.map(e=>e))
+    console.log(copiaSuper.map(e => e))
+  };
+
+  calcularPoblacionTotal = () => {
+    const poblacion = this.state.poblacion;
+
+    let sumaTotalP = 0
+
+    for (let i = 0; i < poblacion.length; i++) {
+      
+      for (let j = 0; j < poblacion[i].length; j++) {
+
+        sumaTotalP += poblacion[i][j]
+        
+      }
+    }
+
+    console.log(sumaTotalP)
+    this.setState({poblacionTotal: sumaTotalP
+});
+  }
+
+
+  calcularSumas = (i, j) => {
+    const poblacion = this.state.poblacion;
+
+    let posicionI = i;
+    let posicionJ = j;
+    let sumaArriba = 0;
+    let sumaAbajo = 0;
+    let sumaIzquierda = 0;
+    let sumaDerecha = 0;
+    // Suma de los números arriba, abajo, izquierda y derecha
+
+
+    //Sumo las posiciones de arriba
+    for (let i = posicionI - 1; i >= 0; i--) {
+
+      sumaArriba = sumaArriba += poblacion[i][posicionJ]
+    }
+
+    //Sumo las posiciones de abajo
+    for (let i = posicionI + 1; i < poblacion.length; i++) {
+
+      sumaAbajo = sumaAbajo += poblacion[i][posicionJ]
+    }
+
+    //Sumo las posiciones de la izquierda 
+    for (let j = posicionJ - 1; j >= 0; j--) {
+
+      sumaIzquierda = sumaIzquierda += poblacion[posicionI][j]
+    }
+
+    //Sumo las posiciones de la derecha 
+    for (let j = posicionJ + 1; j < poblacion[posicionI].length; j++) {
+
+      sumaDerecha = sumaDerecha += poblacion[posicionI][j]
+    }
+
+    let sumaTotal = sumaArriba + sumaAbajo + sumaIzquierda + sumaDerecha + poblacion[posicionI][posicionJ]
+
+    return {
+      sumaTotal
+    };
   };
 
   render() {
 
     return (
       <div>
-        <Mapa 
-        mapa={this.state.poblacion}
-        agregar={(i,j) => this.agregarSupermercado(i,j)}
+        <Mapa
+          mapa={this.state.poblacion}
+          agregar={(i, j) => this.agregarSupermercado(i, j)}
+          totalPoblacion = {this.state.poblacionTotal}
         ></Mapa>
 
         <ListaSupermercados
-        listaSuper = {this.state.supermercados}
+          listaSuper={this.state.supermercados}
+          listaPoblacion={this.state.poblacion}
         ></ListaSupermercados>
 
       </div>
