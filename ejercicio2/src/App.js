@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import React from 'react';
+import { Button } from 'reactstrap';
 
-function App() {
+
+// componente Boton que crea un boton al que le pasas un color y un funcion
+function Boton(props) {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Button color={props.col} onClick={() => props.cambia()}>
+      Pulsa para cambiar de color.
+    </Button>
+  )
+}
+
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      color: "danger",
+    }
+  }
+
+  cambia() {
+    if (this.state.color === "danger") {
+      this.setState({ color: "success" })
+    } else {
+      this.setState({ color: "danger" })
+    }
+  }
+  
+  render() {
+    return (
+      <div className="App">
+        <Boton col={this.state.color} cambia={() => this.cambia()} />
+      </div>
+    );
+  }
 }
 
 export default App;
