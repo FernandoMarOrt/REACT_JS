@@ -82,9 +82,9 @@ class App extends Component {
       for (let j = 0; j < 9; j++) {
         if (l[i][j] != "-" && l[i][j] == l[i + 1][j] && l[i][j] == l[i + 2][j] && l[i][j] == l[i + 3][j]) {
           if (l[i][j] == "primary") {
-            this.setState({ ganador: "GANAN AZULES", jugable: false });
+            this.setState({ ganador: "GANAN LOS AZULES", jugable: false });
           } else {
-            this.setState({ ganador: "GANAN ROJOS", jugable: false });
+            this.setState({ ganador: "GANAN LOS ROJOS", jugable: false });
           }
         }
       }
@@ -106,7 +106,7 @@ class App extends Component {
     return (
       <div className="App">
         <h1 className='titulo'> Turno: {this.state.titulo}</h1>
-        <h1 className={this.state.titulo}>{this.state.ganador}</h1>
+        <h1 className={this.state.titulo}>{this.state.ganado}</h1>
         <div>
           <MapaBotones listaBotones={this.state.listaBotones} clica={(x, y) => this.clica(x, y)}/>
         </div>
