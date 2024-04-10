@@ -42,9 +42,9 @@ function App () {
     for (let i = 0; i < tamanioAltura; i++) {
       tableroAux.push([])
       for (let j = 0; j < tamanioAncho; j++) {
-        if (i < 4) {
+        if (i < 5) {
           color = 'gris'
-        } else if (i > 3) { //poner a 3 si se quiere rellenar
+        } else if (i > 4) { //poner a 3 si se quiere rellenar
           color = 'verde'
         } else {
           color = 'blanco'
@@ -77,7 +77,7 @@ function App () {
       switch (tablero[seleccionado.posY][seleccionado.posX]) {
         case 'verde':
           if (comprobarMovimiento('verde', posX, posY)) {
-            tableroAux[seleccionado.posY][seleccionado.posX] = 'blanco'
+            tableroAux[seleccionado.posY][seleccionado.posX] = 'blanco' //Para que cuando se coma la ficha cambie a su
             tableroAux[posY][posX] = 'verde'
           }
           break
