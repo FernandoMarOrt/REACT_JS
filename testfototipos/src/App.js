@@ -2,6 +2,7 @@ import React, { Component, useState } from "react";
 import { Button, Navbar, NavbarBrand, Card, CardBody, CardTitle, CardHeader, ListGroup, CardSubtitle, CardText, Col } from 'reactstrap';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { PREGUNTAS } from "./componentes/datos";
+import Grafica from './componentes/Grafica';
 import axios from 'axios';
 import "./App.css";
 
@@ -50,19 +51,20 @@ const Fototipo = (props) => {
   const [imagenes, setImagenes] = useState("");
   const [fotoTipo, setFotoTipo] = useState(undefined);
   const [tipoPiel, setTipoPiel] = useState("");
+  const resultadosTotales = props.resultadosTotales;
 
   props.fototipos.map((f, i, arr) => {
 
     if (fotoTipo == undefined && f >= props.puntuacion && arr[i - 1] < props.puntuacion) {
-      setFotoTipo(i); /*Este es*/
+      setFotoTipo(i); /*Este es*/ 
       setTipoPiel(props.tipoPiel[i - 1])
       setImagenes(props.imagenes[i - 1])
     }
 
   })
   return (
-    <div>
-      <Col
+    <div id="resultadofinal">
+      <Col id="carta"
         sm={{
           offset: 1,
           order: 2,
@@ -76,7 +78,7 @@ const Fototipo = (props) => {
             </CardTitle>
             <CardSubtitle className="mb-2 text-muted" tag="h6"     >
               <p>Su puntuación en el test fue de {props.puntuacion}</p>
-              <img src={imagenes} alt="" />
+              <img src={`${process.env.PUBLIC_URL}/${imagenes}`} alt="imagenes" />
             </CardSubtitle>
             <CardText>
               <p>{tipoPiel}</p>
@@ -84,6 +86,9 @@ const Fototipo = (props) => {
           </CardBody>
         </Card>
       </Col>
+      <div id="graficadatos">
+      <Grafica datos={resultadosTotales}/>
+      </div>
     </div>
   );
 };
@@ -125,14 +130,17 @@ class App extends Component {
   
     axios({
       method: 'post',
-      url: "./recuento",
+      //url: "./recuento",
+      url: "http://localhost/Proyectos/JSServer/recuento/index.php",
       data: {
         array: resultadosTotales
       }
-    })
+    })  
     .then(res => {
-      console.log(res.data); // Aquí deberías ver la respuesta del servidor
-      console.log("RESULTADOOOOOOOSSSSSSS", resultadosTotales);
+      console.log(res.data); //respuesta del servidor
+      console.log("RESULTADOS", resultadosTotales);
+      const nuevosValores = res.data.nuevosValores;
+       this.setState({ resultadosTotales: nuevosValores });
     })
     .catch(error => {
       console.error('Error al enviar datos al servidor:', error);
@@ -145,7 +153,7 @@ class App extends Component {
   respuesta(orden, valor) {
 
 
-    if (!this.state.respuestasDesactivadas.includes(orden)) {
+    if (!this.state.respuestasDesactivadas.includes(orden)) {//Si la respuesta no esta desactivada
 
       const nuevaPuntuacion = this.state.puntuacion + valor;
       const nuevasRespuestasDesactivadas = this.state.respuestasDesactivadas.concat(orden);
@@ -198,6 +206,7 @@ class App extends Component {
         tipoPiel={this.state.tipoPiel}
         imagenes={this.state.imagenes}
         numerofototipo={this.state.numerofototipo}
+        resultadosTotales={this.state.resultadosTotales}
       />
     }
 

@@ -1,0 +1,148 @@
+{
+  "listaPreguntas": [
+    {
+      "pregunta": {
+        "id":0,
+        "pregunta": "¿Cuál es el color natural de tu piel cuando no está bronceada? ",
+        "respuestas": [
+          "Rojiza,blanca",
+          "Blanca-beige",
+          "Beige",
+          "Marrón clara",
+          "Marrón",
+          "Negra"
+        ],
+        "valor": [
+          0,
+          2,
+          4,
+          8,
+          12,
+          16
+        ]
+      }
+    },
+    {
+      "pregunta": {
+        "id":1,
+        "pregunta": "¿De qué color natural es tu pelo? ",
+        "respuestas": [
+          "Pelirrojo,rubio claro",
+          "Rubio, castaño claro",
+          "Castaño",
+          "MCastaño oscuro",
+          "Castaño oscuro-negro",
+          "Negro"
+        ],
+        "valor": [
+          0,
+          2,
+          4,
+          8,
+          12,
+          16
+        ]
+      }
+    },
+    {
+      "pregunta": {
+        "id":2,
+        "pregunta": "¿De qué color tienes los ojos?",
+        "respuestas": [
+          "Azul claro, verde claro, gris claro",
+          "Azules,verdes,grises",
+          "Grises, marrón claro",
+          "Marrones",
+          "Marrones oscuro",
+          "Negros"
+        ],
+        "valor": [
+          0,
+          2,
+          4,
+          8,
+          12,
+          16
+        ]
+      }
+    },
+    {
+      "pregunta": {
+        "id":3,
+        "pregunta": "¿Cuántas pecas tienes de manera natural en el cuerpo cuando no estás bronceado? ",
+        "respuestas": [
+          "Muchas",
+          "Algunas",
+          "Unas cuantas",
+          "Ninguna"
+        ],
+        "valor": [
+          0,
+          2,
+          4,
+          8
+        ]
+      }
+    },
+    {
+      "pregunta": {
+        "id":4,
+        "pregunta": " ¿Qué categoría describe mejor tu herencia genética?",
+        "respuestas": [
+          "Raza blanca de piel muy blanca",
+          "Raza blanca de piel clara",
+          "Raza blanca piel morena(Mediterráneo)",
+          "Oriente Medio, hindú, asiático,hispano-americano",
+          "Aborigen, africano, afroamericano"
+        ],
+        "valor": [
+          0,
+          2,
+          4,
+          8,
+          12
+        ]
+      }
+    },
+    {
+      "pregunta": {
+        "id":5,
+        "pregunta": "¿Qué describe mejor tu potencial de QUEMADURA exponiéndote al sol una hora en verano?",
+        "respuestas": [
+          "Siempre se quema y no se broncea",
+          "Se quema y se broncea un poco",
+          "Puede quemarse, pero se broncea",
+          "No se quema y se broncea facilmente",
+          "No se quema y se broncea profundamente",
+          "Nunca se quema"
+        ],
+        "valor": [
+          0,
+          2,
+          4,
+          8,
+          10,
+          12
+        ]
+      }
+    },
+    {
+      "pregunta": {
+        "id":6,
+        "pregunta": "¿Qué categoría describe mejor tu potencial de BRONCEADO?",
+        "respuestas": [
+          "Nunca se broncea",
+          "Se puede broncear ligeramente",
+          "Se puede broncear moderadamente",
+          "Se puede broncear profundamente"
+        ],
+        "valor": [
+          0,
+          2,
+          4,
+          8
+        ]
+      }
+    }
+  ]
+}

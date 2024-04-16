@@ -1,0 +1,58 @@
+{
+  "fototipos": [
+    {
+      "id": 1,
+      "nombre": "Fototipo I",
+      "piel": "muy clara, siempre se quema, nunca se broncea.",
+      "pelo": "pelirrojo o rubio claro.",
+      "ojos": "azules, verdes o grises.",
+      "sensibilidad solar": "muy alta.",
+      "imagen":"../ALVARO/images/Fototipo-piel-1.png"
+    },
+    {
+      "id": 2,
+      "nombre": "Fototipo II",
+      "piel": "clara, se quema con facilidad, se broncea ligeramente.",
+      "pelo": "rubio o castaño claro.",
+      "ojos": "azules, verdes, grises o avellana.",
+      "sensibilidad solar": "alta.",
+      "imagen":"../ALVARO/images/Fototipo-piel-2.png"
+    },
+    {
+      "id": 3,
+      "nombre": "Fototipo III",
+      "piel": "intermedia, se quema moderadamente, se broncea de forma dorada.",
+      "pelo": "castaño o castaño claro.",
+      "ojos": "avellana, verdes o marrones.",
+      "sensibilidad solar": "media.",
+      "imagen":"../ALVARO/images/Fototipo-piel-3.png"
+    },
+    {
+      "id": 4,
+      "nombre": "Fototipo IV",
+      "piel": "trigueña, se quema poco, se broncea de forma marrón.",
+      "pelo": "castaño oscuro o negro.",
+      "ojos": "marrones o negros.",
+      "sensibilidad solar": "baja.",
+      "imagen":"../ALVARO/images/Fototipo-piel-4.png"
+    },
+    {
+      "id": 5,
+      "nombre": "Fototipo V",
+      "piel": "marrón oscura, rara vez se quema, se broncea profundamente.",
+      "pelo": "negro.",
+      "ojos": "marrones o negros.",
+      "sensibilidad solar": "muy baja.",
+      "imagen":"../ALVARO/images/Fototipo-piel-5.png"
+    },
+    {
+      "id": 6,
+      "nombre": "Fototipo VI",
+      "piel": "negra, nunca se quema.",
+      "pelo": "negro.",
+      "ojos": "marrones o negros.",
+      "sensibilidad solar": "nula.",
+      "imagen":"../ALVARO/images/Fototipo-piel-6.png"
+    }
+  ]
+}
