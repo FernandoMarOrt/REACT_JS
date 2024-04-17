@@ -8,16 +8,33 @@ import "./App.css";
 
 const Preguntas = (props) => {
 
-  let obj = props.preguntas.map(p => {
-    let res = p.respuestas.map(r => <><Button
-      color="primary"
-      outline
-      onClick={() => props.respuesta(p.orden, r.valor)}
-      disabled={props.respuestasDesactivadas.includes(p.orden)}
-    >{r.respuesta}</Button>{"  "}</>)
+ //Guardo respuesta
+ const [respuestasSeleccionadas, setRespuestasSeleccionadas] = useState({});
+
+ //Manejo el click de cada respuesta
+ const handleClick = (orden, valor) => {
+   setRespuestasSeleccionadas({...respuestasSeleccionadas, [orden]: valor});
+   props.respuesta(orden, valor);
+ };
+
+ let obj = props.preguntas.map(p => {
+   let res = p.respuestas.map(r => (
+     <Button
+       key={r.valor}
+       color="primary"
+       outline
+       onClick={() => handleClick(p.orden, r.valor)}
+       className={respuestasSeleccionadas[p.orden] === r.valor ? "respuesta-seleccionada" : ""}
+       disabled={props.respuestasDesactivadas.includes(p.orden)}
+     >
+       {r.respuesta}
+     </Button>
+    ));
     return (
       <Card
+        key={p.orden}
         style={{
+
           width: '60%',
           margin: '2rem auto',
         }}
@@ -56,7 +73,7 @@ const Fototipo = (props) => {
   props.fototipos.map((f, i, arr) => {
 
     if (fotoTipo == undefined && f >= props.puntuacion && arr[i - 1] < props.puntuacion) {
-      setFotoTipo(i); /*Este es*/ 
+      setFotoTipo(i); /*Este es*/
       setTipoPiel(props.tipoPiel[i - 1])
       setImagenes(props.imagenes[i - 1])
     }
@@ -87,7 +104,7 @@ const Fototipo = (props) => {
         </Card>
       </Col>
       <div id="graficadatos">
-      <Grafica datos={resultadosTotales}/>
+        <Grafica datos={resultadosTotales} />
       </div>
     </div>
   );
@@ -127,26 +144,25 @@ class App extends Component {
 
   guardarResultadosEnArchivo() {
     const resultadosTotales = this.state.resultadosTotales.slice(); // Utiliza slice para clonar el array
-  
+
     axios({
       method: 'post',
-      //url: "./recuento",
-      url: "http://localhost/Proyectos/JSServer/recuento/index.php",
+      url: "https://thematic-learning.com/2DAW2024/FERNANDO/recuento/index.php",
       data: {
         array: resultadosTotales
       }
-    })  
-    .then(res => {
-      console.log(res.data); //respuesta del servidor
-      console.log("RESULTADOS", resultadosTotales);
-      const nuevosValores = res.data.nuevosValores;
-       this.setState({ resultadosTotales: nuevosValores });
     })
-    .catch(error => {
-      console.error('Error al enviar datos al servidor:', error);
-    });
+      .then(res => {
+        console.log(res.data); //respuesta del servidor
+        console.log("RESULTADOS", resultadosTotales);
+        const nuevosValores = res.data.nuevosValores;
+        this.setState({ resultadosTotales: nuevosValores });
+      })
+      .catch(error => {
+        console.error('Error al enviar datos al servidor:', error);
+      });
   }
-  
+
 
 
 
@@ -170,7 +186,7 @@ class App extends Component {
     if (this.state.respuestasDesactivadas.length === this.state.preguntas.length) {
       const fototipo = this.state.fototipos.findIndex(score => this.state.puntuacion <= score);
       const numeroFototipo = fototipo >= 0 ? fototipo : null;
-  
+
       // Actualizar el array resultadosTotales
       if (numeroFototipo !== null) {
         this.setState(prevState => ({
@@ -187,7 +203,7 @@ class App extends Component {
       this.setState({ mensaje: true });
     }
   }
-  
+
 
 
 
