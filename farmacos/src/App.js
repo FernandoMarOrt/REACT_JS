@@ -1,9 +1,9 @@
 import React, { useState, Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
-Alert, Row, Col, UncontrolledAccordion, AccordionItem,
-AccordionHeader, AccordionBody, Input, Button, Modal, ModalHeader,
-ModalBody, ModalFooter, FormGroup, Label
+  Alert, Row, Col, UncontrolledAccordion, AccordionItem,
+  AccordionHeader, AccordionBody, Input, Button, Modal, ModalHeader,
+  ModalBody, ModalFooter, FormGroup, Label
 } from 'reactstrap';
 import { FARMACOS } from './componentes/datos.js';
 
@@ -14,7 +14,6 @@ const VentanaModalDiccionario = (props) => {
   const [filtro, setFiltro] = useState('');
 
   const farm = FARMACOS;
-//con esto haremos el filter
   const handleChange = (event) => {
     const target = event.target;
     if (target.name === "filtro") {
@@ -25,7 +24,6 @@ const VentanaModalDiccionario = (props) => {
       console.log(medicamento)
     }
   }
-//con eston creamos la array del select para que muestre las opciones segun el filtro
   const getData = () => {
     if (filtro !== "") {
       return (farm.filter(f => f.descATC.search(filtro) >= 0).map(e => (
@@ -36,7 +34,6 @@ const VentanaModalDiccionario = (props) => {
       <option key={e.codATC}>{e.codATC}|{e.descATC}</option>
     )))
   }
-//Poner el medicamento en una label por que sino convierte todo en un objeto por que le da la gana
   return (
     <div>
       <Modal isOpen={props.mostrar} toggle={props.toggle} className={className} >
@@ -64,6 +61,10 @@ const VentanaModalDiccionario = (props) => {
     </div>
   );
 }
+
+
+
+
 class Filter extends Component {
   constructor(props) {
     super(props);
@@ -77,8 +78,11 @@ class Filter extends Component {
     }
   }
 
+
+
+  
+
   add(datos) {
-   //el .split sirve para dividir un string en partes de uan array pasandole un parametro de separacion 
     let d = datos.split("|")
     if (this.state.tipoboton === "primary") {
       this.setState(prevState => ({ rxseleccionar: [...prevState.rxseleccionar, d[0]] }));
@@ -130,12 +134,12 @@ class Filter extends Component {
                   <Col>
                     <Alert color="danger">
                       Excluir X Medicamentos:
-                      <Input 
-                      type="textarea" 
-                      name="rxenmascarar"
-                      value={this.state.rxenmascarar} />
+                      <Input
+                        type="textarea"
+                        name="rxenmascarar"
+                        value={this.state.rxenmascarar} />
                       <Button
-                      color="danger" onClick={() => { this.toggleModal("danger") }} >Add</Button>
+                        color="danger" onClick={() => { this.toggleModal("danger") }} >Add</Button>
                       {" "}
                       <Button color="danger" onClick={() => this.vaciar2()}>Clear</Button>
                     </Alert>

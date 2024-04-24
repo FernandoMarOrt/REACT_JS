@@ -1,0 +1,24 @@
+.App {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 1rem;
+}
+
+header{
+  border: 1px solid red;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+img#user{
+  width: 40px;
+  cursor: pointer;
+}
+
+p#mensajeError{
+  color: red;
+  padding-top: 1rem;
+  font-weight: bold;
+}
