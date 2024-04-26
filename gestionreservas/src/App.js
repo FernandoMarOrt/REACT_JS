@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import user from './img/user.svg';
 import Login from './componentes/login';
-import Admin from './componentes/vistaadmin';
 import Cliente from './componentes/vistacliente';
+import Admin from './componentes/vistaadmin';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
-import {PELUQUEROS} from './componentes/datosPeluqueros';
+import { PELUQUEROS } from './componentes/datosPeluqueros';
 import './App.css';
 
 class App extends Component {
@@ -17,19 +17,18 @@ class App extends Component {
       vistaAdmin: false,
       info: "",
       usuarioActual: null,
-      peluqueros:[],
-
-
+      peluqueros: [],
     };
     this.toggle = this.toggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleVolverClick = this.handleVolverClick.bind(this); // Función para volver a la vista cliente
   }
 
   componentDidMount() {
     axios.get(PELUQUEROS)
       .then(response => {
         console.log(response.data);
-        this.setState({peluqueros : response.data})
+        this.setState({ peluqueros: response.data })
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
@@ -79,6 +78,10 @@ class App extends Component {
     }
   }
 
+  handleVolverClick() { // Función para volver a la vista cliente
+    this.setState({ vistaAdmin: false });
+  }
+
   render() {
     const { modal, vistaAdmin, info } = this.state;
 
@@ -90,7 +93,7 @@ class App extends Component {
         </header>
         <main>
           <Login isOpen={modal} toggle={this.toggle} handleSubmit={this.handleSubmit} info={info} />
-          {vistaAdmin ? <Admin /> : <Cliente peluqueros={this.state.peluqueros}/>}
+          {vistaAdmin ? <Admin onVolverClick={this.handleVolverClick} /> : <Cliente peluqueros={this.state.peluqueros} />}
         </main>
         <footer></footer>
       </div>
