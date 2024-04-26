@@ -4,6 +4,7 @@
     padding: 1rem;
 }
 
+
 header{
   border: 1px solid red;
   padding: 0 1rem;
@@ -21,4 +22,30 @@ p#mensajeError{
   color: red;
   padding-top: 1rem;
   font-weight: bold;
+}
+
+h1{
+  text-align: center;
+}
+
+div.contenedorReservas{
+  display: flex;
+  flex-direction: column;
+}
+
+div.reservasPeluqueros{
+  display: flex;
+  flex-direction: row;
+  border: 1px solid red;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+img.imgPeluqueros{
+  width: 200px;
+  border-radius: 100%;
+}
+
+p.nombrePeluqueros{
+  text-align: center;
 }

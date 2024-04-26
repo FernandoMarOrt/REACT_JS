@@ -1,76 +1,101 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import user from './img/user.svg';
 import Login from './componentes/login';
 import Admin from './componentes/vistaadmin';
 import Cliente from './componentes/vistacliente';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import axios from "axios";
+import {PELUQUEROS} from './componentes/datosPeluqueros';
 import './App.css';
 
-function App() {
-  // Ventana modal
-  const [modal, setModal] = useState(false);
-  const toggle = () => setModal(!modal);
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      modal: false,
+      vistaAdmin: false,
+      info: "",
+      usuarioActual: null,
+      peluqueros:[],
 
 
-  //Vista actual
-  const [vistaAdmin, setvistaAdmin] = useState(false);
+    };
+    this.toggle = this.toggle.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-  //Mensaje de error del login
-  const [info, setInfo] = useState("");
+  componentDidMount() {
+    axios.get(PELUQUEROS)
+      .then(response => {
+        console.log(response.data);
+        this.setState({peluqueros : response.data})
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+  }
 
-  //Usuario que esta logueado 
-  const [usuarioActual, setusuarioActual] = useState(null);
+  toggle() {
+    this.setState(prevState => ({
+      modal: !prevState.modal
+    }));
+  }
 
-  // Usuario admin
-  const usuarios = [
-    { userId: "admin", password: "1234" }
-  ];
-
-  function handleSubmit(event) {
+  handleSubmit(event) {
     event.preventDefault();
 
     const sendUserId = event.target.usuario.value;
     const sendUserPsw = event.target.clave.value;
 
-    const loggedInUser = checkLogin(sendUserId, sendUserPsw);
+    const loggedInUser = this.checkLogin(sendUserId, sendUserPsw);
 
     if (loggedInUser) {
-      setusuarioActual(loggedInUser);
-      setInfo("");
-      setvistaAdmin(true);
-      toggle();
+      this.setState({
+        usuarioActual: loggedInUser,
+        info: "",
+        vistaAdmin: true
+      });
+      this.toggle();
     }
   }
 
-  function checkLogin(idToCheck, pswToCheck) {
+  checkLogin(idToCheck, pswToCheck) {
+    const usuarios = [
+      { userId: "admin", password: "1234" }
+    ];
+
     if (idToCheck && pswToCheck) {
       const foundUser = usuarios.find(user => user.userId === idToCheck && user.password === pswToCheck);
       if (foundUser) {
         return foundUser;
       } else {
-        setInfo("*El usuario o la contraseña no son correctos*");
+        this.setState({ info: "*El usuario o la contraseña no son correctos*" });
         return null;
       }
     } else {
-      setInfo("*Completa todos los campos por favor*");
+      this.setState({ info: "*Completa todos los campos por favor*" });
       return null;
     }
   }
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Gestion Reservas</h1>
-        <img src={user} id="user" alt="user" onClick={toggle} />
-      </header>
-      <main>
-        <Login isOpen={modal} toggle={toggle} handleSubmit={handleSubmit} info={info} />
-        {vistaAdmin ? <Admin/> : <Cliente/> }
-      </main>
-      <footer></footer>
-    </div>
-  );
+  render() {
+    const { modal, vistaAdmin, info } = this.state;
+
+    return (
+      <div className="App">
+        <header className="App-header">
+          <h1>Gestion Reservas</h1>
+          <img src={user} id="user" alt="user" onClick={this.toggle} />
+        </header>
+        <main>
+          <Login isOpen={modal} toggle={this.toggle} handleSubmit={this.handleSubmit} info={info} />
+          {vistaAdmin ? <Admin /> : <Cliente peluqueros={this.state.peluqueros}/>}
+        </main>
+        <footer></footer>
+      </div>
+    );
+  }
 }
 
 export default App;

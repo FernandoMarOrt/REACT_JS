@@ -1,0 +1,1 @@
+export const PELUQUEROS = "http://localhost/Proyectos/JSServer/php/peluqueros.php";
