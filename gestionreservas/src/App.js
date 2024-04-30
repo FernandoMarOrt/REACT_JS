@@ -8,6 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import { PELUQUEROS } from './componentes/datosPeluqueros';
 import { RESERVAS } from './componentes/datosReservas';
+import { DIAS } from './componentes/datosDias';
+import { PLANTILLA } from './componentes/datosPlantilla';
 import './App.css';
 
 class App extends Component {
@@ -20,6 +22,8 @@ class App extends Component {
       usuarioActual: null,
       peluqueros: [],
       reservas: [],
+      dias:[],
+      plantilla:[],
     };
     this.toggle = this.toggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,7 +33,6 @@ class App extends Component {
   componentDidMount() {
     axios.get(PELUQUEROS)
       .then(response => {
-        console.log(response.data);
         this.setState({ peluqueros: response.data })
       })
       .catch(error => {
@@ -38,13 +41,28 @@ class App extends Component {
 
     axios.get(RESERVAS)
       .then(response => {
-        console.log(response.data);
         this.setState({ reservas: response.data })
       })
       .catch(error => {
         console.error('Error fetching data: ', error);
       });
 
+      axios.get(DIAS)
+      .then(response => {
+        this.setState({ dias: response.data })
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+
+    axios.get(PLANTILLA)
+      .then(response => {
+        console.log(response.data);
+        this.setState({ plantilla: response.data })
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
   }
 
   toggle() {
@@ -105,7 +123,11 @@ class App extends Component {
         </header>
         <main>
           <Login isOpen={modal} toggle={this.toggle} handleSubmit={this.handleSubmit} info={info} />
-          {vistaAdmin ? <Admin onVolverClick={this.handleVolverClick} /> : <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas}/>}
+          {vistaAdmin ? <Admin onVolverClick={this.handleVolverClick} 
+          peluqueros={this.state.peluqueros} 
+          reservas={this.state.reservas}
+          dias={this.state.dias} 
+          plantilla={this.state.plantilla}/> : <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas}/>}
         </main>
         <footer></footer>
       </div>

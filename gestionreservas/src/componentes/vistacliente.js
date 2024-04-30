@@ -40,7 +40,7 @@ function VistaCliente({ peluqueros, reservas }) {
                   <p><b>Día:</b> {r.id_dias}</p>
                   <p><b>Hora:</b> {r.hora}</p>
                   <p><b>Precio:</b> {p.precio}€</p>
-                  <Button color='success'  onClick={() => handleReservarClick(r)}>Reservar</Button>
+                  <Button color='success' id='confirmarReserva' onClick={() => handleReservarClick(r)}>Reservar</Button>
                 </div>
               </div>
             ))}
