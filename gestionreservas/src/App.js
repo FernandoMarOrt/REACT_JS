@@ -7,6 +7,7 @@ import Admin from './componentes/vistaadmin';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 import { PELUQUEROS } from './componentes/datosPeluqueros';
+import { RESERVAS } from './componentes/datosReservas';
 import './App.css';
 
 class App extends Component {
@@ -18,6 +19,7 @@ class App extends Component {
       info: "",
       usuarioActual: null,
       peluqueros: [],
+      reservas: [],
     };
     this.toggle = this.toggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -33,6 +35,16 @@ class App extends Component {
       .catch(error => {
         console.error('Error fetching data: ', error);
       });
+
+    axios.get(RESERVAS)
+      .then(response => {
+        console.log(response.data);
+        this.setState({ reservas: response.data })
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+      });
+
   }
 
   toggle() {
@@ -93,7 +105,7 @@ class App extends Component {
         </header>
         <main>
           <Login isOpen={modal} toggle={this.toggle} handleSubmit={this.handleSubmit} info={info} />
-          {vistaAdmin ? <Admin onVolverClick={this.handleVolverClick} /> : <Cliente peluqueros={this.state.peluqueros} />}
+          {vistaAdmin ? <Admin onVolverClick={this.handleVolverClick} /> : <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas}/>}
         </main>
         <footer></footer>
       </div>

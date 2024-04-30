@@ -1,0 +1,1 @@
+export const RESERVAS = "http://localhost/Proyectos/JSServer/php/reservas.php";

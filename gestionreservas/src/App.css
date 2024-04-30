@@ -36,7 +36,7 @@ div.contenedorReservas{
 div.reservasPeluqueros{
   display: flex;
   flex-direction: row;
-  border: 1px solid red;
+  border: 1px solid blue;
   padding: 1rem;
   margin: 1rem 0;
 }
@@ -48,4 +48,16 @@ img.imgPeluqueros{
 
 p.nombrePeluqueros{
   text-align: center;
+}
+
+div.mostrarReserva{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0.5rem; 
+  height: 190px;
+  padding: 1rem;
+  color: white;
+  background-color: grey;
+  border-radius: 30px;
 }
