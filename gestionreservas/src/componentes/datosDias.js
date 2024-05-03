@@ -1,1 +1,0 @@
-export const DIAS = "http://localhost/Proyectos/JSServer/php/dias.php";

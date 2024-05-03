@@ -6,10 +6,10 @@ import Cliente from './componentes/vistacliente';
 import Admin from './componentes/vistaadmin';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
-import { PELUQUEROS } from './componentes/datosPeluqueros';
-import { RESERVAS } from './componentes/datosReservas';
-import { DIAS } from './componentes/datosDias';
-import { PLANTILLA } from './componentes/datosPlantilla';
+import { PELUQUEROS } from './componentes/datos';
+import { RESERVAS } from './componentes/datos';
+import { DIAS } from './componentes/datos';
+import { PLANTILLA } from './componentes/datos';
 import './App.css';
 
 class App extends Component {
@@ -41,6 +41,7 @@ class App extends Component {
 
     axios.get(RESERVAS)
       .then(response => {
+        console.log(response.data);
         this.setState({ reservas: response.data })
       })
       .catch(error => {
@@ -57,7 +58,6 @@ class App extends Component {
 
     axios.get(PLANTILLA)
       .then(response => {
-        console.log(response.data);
         this.setState({ plantilla: response.data })
       })
       .catch(error => {
@@ -95,9 +95,9 @@ class App extends Component {
     ];
 
     if (idToCheck && pswToCheck) {
-      const foundUser = usuarios.find(user => user.userId === idToCheck && user.password === pswToCheck);
-      if (foundUser) {
-        return foundUser;
+      const encontrado = usuarios.find(user => user.userId === idToCheck && user.password === pswToCheck);
+      if (encontrado) {
+        return encontrado;
       } else {
         this.setState({ info: "*El usuario o la contraseña no son correctos*" });
         return null;
@@ -127,7 +127,7 @@ class App extends Component {
           peluqueros={this.state.peluqueros} 
           reservas={this.state.reservas}
           dias={this.state.dias} 
-          plantilla={this.state.plantilla}/> : <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas}/>}
+          plantilla={this.state.plantilla}/> : <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas} dias={this.state.dias} />}
         </main>
         <footer></footer>
       </div>

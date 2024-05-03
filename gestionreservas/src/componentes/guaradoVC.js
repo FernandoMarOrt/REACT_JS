@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import '../App.css';
 
 function VistaCliente({ peluqueros, reservas, dias }) {
@@ -7,7 +7,6 @@ function VistaCliente({ peluqueros, reservas, dias }) {
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
-  const [alerta, setAlerta] = useState(false);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -19,18 +18,10 @@ function VistaCliente({ peluqueros, reservas, dias }) {
   };
 
   const handleReservaConfirmada = () => {
-    if (nombre.trim() === '' || telefono.trim() === '') {
-      // Si el nombre o el teléfono están vacíos, mostrar la alerta
-      setAlerta(true);
-    } else {
-      //Si se rellenan bien , edito el nombre y telefono de la reserva y la pongo ocupada con estado a 1
-      if (reservaSeleccionada) {
-        reservaSeleccionada.nombre = nombre.trim();
-        reservaSeleccionada.telefono = telefono.trim();
-        reservaSeleccionada.estado = "1";
-      }
-      toggleModal();
-    }
+    //Cuando confirme tengo que y mirar que nombre y telefono no esten vacios
+
+    toggleModal();
+
   };
 
   return (
@@ -66,7 +57,11 @@ function VistaCliente({ peluqueros, reservas, dias }) {
                 ))}
               </select>
             </div>
+
           </div>
+
+
+
 
 
         ))}
@@ -83,12 +78,10 @@ function VistaCliente({ peluqueros, reservas, dias }) {
             <FormGroup>
               <Label for="nombre">Nombre:</Label>
               <Input type="text" name="nombre" id="nombre" value={nombre} placeholder='Rellene con su nombre por favor' onChange={(e) => setNombre(e.target.value)} />
-              {alerta && nombre.trim() === '' && <Alert color="danger">Por favor, complete este campo.</Alert>}
             </FormGroup>
             <FormGroup>
               <Label for="telefono">Teléfono:</Label>
               <Input type="tel" name="telefono" id="telefono" placeholder='Rellene con su telefono por favor' value={telefono} onChange={(e) => setTelefono(e.target.value)} />
-              {alerta && telefono.trim() === '' && <Alert color="danger">Por favor, complete este campo.</Alert>}
             </FormGroup>
           </Form>
         </ModalBody>

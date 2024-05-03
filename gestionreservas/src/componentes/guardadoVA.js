@@ -3,20 +3,20 @@ import { Button, Alert } from 'reactstrap';
 
 
 function generarReservas(peluqueros, dias, plantilla) {
-  const arraysDeHoras = separarHoras(plantilla); //Separo las horas
-  console.log(arraysDeHoras)
+  const arraysDeHoras = separarHoras(plantilla); // Llamar a la función separarHoras
+
   let reservas = [];
 
-  peluqueros.map((peluquero, index) => {
-    const horasDelPeluquero = arraysDeHoras[index]; //Horas del peluquero
-
+  peluqueros.map(peluquero => {
     dias.map(dia => {
-      horasDelPeluquero.map(hora => {
-        reservas.push({
-          id_Peluquero: peluquero.id_peluquero,
-          id_Dia: dia.id_dias,
-          hora: hora,
-          estado: 0
+      arraysDeHoras.map((horas, id_plantilla) => {
+        horas.map(hora => {
+          reservas.push({
+            id_Peluquero: peluquero.id_peluquero,
+            id_Dia: dia.id_dias,
+            hora: hora,
+            estado: 0
+          });
         });
       });
     });
@@ -26,7 +26,14 @@ function generarReservas(peluqueros, dias, plantilla) {
 }
 
 function separarHoras(plantilla) {
-  return plantilla.map(p => p.hora.split(","));
+  const arraysDeHoras = [];
+
+  plantilla.map(p => {
+    const horasSeparadas = p.hora.split(",");
+    arraysDeHoras.push(horasSeparadas);
+  });
+
+  return arraysDeHoras;
 }
 
 
