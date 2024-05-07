@@ -1,27 +1,61 @@
 import React, { useState } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import '../App.css';
+import axios from "axios";
+import { EDITARRESERVAS } from './datos';
 
 function VistaCliente({ peluqueros, reservas, dias }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
+  const [alerta, setAlerta] = useState(false);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
 
-  const handleReservarClick = (reserva) => {
+  const handleReservarClick = (reserva) => { //Abro la ventana modal de la confirmacion de reserva
     setReservaSeleccionada(reserva);
     toggleModal();
   };
 
   const handleReservaConfirmada = () => {
-    //Cuando confirme tengo que y mirar que nombre y telefono no esten vacios
 
-    toggleModal();
+    if (nombre.trim() === '' || telefono.trim() === '') { //Error formulario
 
+      setAlerta(true); //Sale la alerta de error
+
+    } else {
+
+      if (reservaSeleccionada) {
+
+        reservaSeleccionada.estado = "1"; 
+
+        const datosActualizar = {
+          id_reserva: reservaSeleccionada.id_reserva,
+          nombre: nombre.trim(),
+          telefono: telefono.trim(),
+          estado: "1"
+        }
+
+        axios.put(EDITARRESERVAS, datosActualizar)
+          .then(response => {
+            // La solicitud se completó con éxito
+            console.log('Datos actualizados correctamente:', response.data);
+          })
+          .catch(error => {
+            // Ocurrió un error al realizar la solicitud
+            console.error('Error al actualizar datos:', error);
+          });
+
+
+      }
+      toggleModal();
+
+
+
+    }
   };
 
   return (
@@ -57,18 +91,14 @@ function VistaCliente({ peluqueros, reservas, dias }) {
                 ))}
               </select>
             </div>
-
           </div>
-
-
-
 
 
         ))}
       </div>
       {/*Ventana Modal para la confirmacion de la reserva*/}
-      <Modal isOpen={modalOpen} toggle={toggleModal}>  
-        <ModalHeader toggle={toggleModal}>Confirmar reserva</ModalHeader> 
+      <Modal isOpen={modalOpen} toggle={toggleModal}>
+        <ModalHeader toggle={toggleModal}>Confirmar reserva</ModalHeader>
         <ModalBody>
           <p><b>Peluquero:</b> {reservaSeleccionada && peluqueros.find(p => p.id_peluquero === reservaSeleccionada.id_peluquero).nombre}</p>
           <p><b>Día:</b> {reservaSeleccionada && reservaSeleccionada.id_dias}</p>
@@ -78,15 +108,17 @@ function VistaCliente({ peluqueros, reservas, dias }) {
             <FormGroup>
               <Label for="nombre">Nombre:</Label>
               <Input type="text" name="nombre" id="nombre" value={nombre} placeholder='Rellene con su nombre por favor' onChange={(e) => setNombre(e.target.value)} />
+              {alerta && nombre.trim() === '' && <Alert color="danger">Por favor, complete este campo.</Alert>}
             </FormGroup>
             <FormGroup>
               <Label for="telefono">Teléfono:</Label>
               <Input type="tel" name="telefono" id="telefono" placeholder='Rellene con su telefono por favor' value={telefono} onChange={(e) => setTelefono(e.target.value)} />
+              {alerta && telefono.trim() === '' && <Alert color="danger">Por favor, complete este campo.</Alert>}
             </FormGroup>
           </Form>
         </ModalBody>
-        
-        {}
+
+        { }
         <ModalFooter>
           <Button color="primary" onClick={handleReservaConfirmada}>Confirmar reserva</Button>{' '}
           <Button color="secondary" onClick={toggleModal}>Cancelar</Button>
