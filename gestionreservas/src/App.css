@@ -67,5 +67,40 @@ div.diasSeleccion{
   display: flex;
   flex-direction: row;
   position: absolute;
-  right: 40px;
+  right: 35px;
+  top:100px;
+}
+
+div#reservasOcupadas{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border: 1px solid red;
+}
+
+p#tituloOcupadas{
+  flex: 0 100%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+div.cuerpoReserva{
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 230px;
+  justify-content: center;
+  color: white;
+  background-color: grey;
+  border-radius: 30px;
+  padding: 1rem;
+  margin: 0.5rem 1rem; 
+}
+
+div.botonesAdmin{
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid red;
 }
