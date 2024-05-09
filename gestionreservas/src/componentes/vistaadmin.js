@@ -1,68 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Alert } from 'reactstrap';
 import axios from 'axios';
 import { INSERTARRESERVAS } from './datos';
+import { EDITARESTADORESERVAS } from './datos';
 
-function generarReservas(peluqueros, dias, plantilla) {
-  const arraysDeHoras = separarHoras(plantilla); // Separo las horas
-  console.log(arraysDeHoras);
-  let reserva = null;
+function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
+  const [reservasGeneradas, setReservasGeneradas] = useState(false);
+  const [reservasActualizadas, setReservasActualizadas] = useState([]);
 
-  for (let i = 0; i < peluqueros.length; i++) {
-    const peluquero = peluqueros[i];
-    const horasDelPeluquero = arraysDeHoras[i];
+  useEffect(() => {
+    setReservasActualizadas(reservas.filter(r => r.estado === "1"));
+  }, [reservas]);
 
-    for (const dia of dias) {
-      for (const hora of horasDelPeluquero) {
-        // Crear la reserva
-        reserva = {
-          id_peluquero: peluquero.id_peluquero,
-          id_dias: dia.id_dias,
-          hora: hora,
-          estado: 0
-        };
+  const generarReserva = (id_peluquero, id_dia, hora, estado) => {
+    axios.post(INSERTARRESERVAS, {
+      id_peluquero: id_peluquero,
+      id_dia: id_dia,
+      hora: hora,
+      estado: estado,
+    })
+    .then(res => {
+      console.log(res.data);
+    })
+    .catch(error => {
+      console.error('Error al insertar reserva:', error);
+    });
+  };
+  const cancelarReserva = (id_reserva) => {
+    const datosActualizar = {
+      id_reserva: id_reserva,
+      nombre: "",
+      telefono: "",
+      estado: 0
+    };
+  
+    axios.put(EDITARESTADORESERVAS, datosActualizar)
+      .then(response => {
+        console.log('Reserva cancelada con éxito:', response.data);
+        setReservasActualizadas(reservasActualizadas.filter(r => r.id_reserva !== id_reserva));
+      })
+      .catch(error => {
+        console.error('Error al cancelar reserva:', error);
+      });
+  };
+  
 
-        // Insertar la reserva en la base de datos
-        generarReserva(reserva.id_peluquero, reserva.id_dias, reserva.hora, reserva.estado);
+  const generarTodasLasReservas = () => {
+    const arraysDeHoras = separarHoras(plantilla); // Separo las horas
+    console.log(arraysDeHoras);
 
-        //Para que solo inserte 1 *QUITAR PARA QUE SE GENEREN TODAS*
-        if (reserva) {
-          return reserva;
+    for (let i = 0; i < peluqueros.length; i++) {
+      const peluquero = peluqueros[i];
+      const horasDelPeluquero = arraysDeHoras[i];
+
+      for (const dia of dias) {
+        for (const hora of horasDelPeluquero) {
+          // Crear la reserva
+          generarReserva(peluquero.id_peluquero, dia.id_dias, hora, 0);
         }
       }
     }
-  }
 
-  return reserva;
-}
-
-
-function generarReserva(id_peluquero, id_dia, hora, estado) {
-  axios.post(INSERTARRESERVAS, {
-    id_peluquero: id_peluquero,
-    id_dia: id_dia,
-    hora: hora,
-    estado: estado,
-  })
-  .then(res => {
-    console.log(res.data);
-  })
-  .catch(error => {
-    console.error('Error al insertar reserva:', error);
-  });
-}
-
-function separarHoras(plantilla) {
-  return plantilla.map(p => p.hora.split(","));
-}
-
-function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick,reservas }) {
-  const [reservasGeneradas, setReservasGeneradas] = useState(false);
-
-  const generarTodasLasReservas = () => {
-    const reservas = generarReservas(peluqueros, dias, plantilla);
-    console.log("Reservas generadas:", reservas);
     setReservasGeneradas(true);
+  };
+
+  const nombrePeluquero = (id_peluquero) => {
+    const peluquero = peluqueros.find(p => p.id_peluquero === id_peluquero);
+    return peluquero ? peluquero.nombre : 'Desconocido';
+  };
+
+  const separarHoras = (plantilla) => {
+    return plantilla.map(p => p.hora.split(","));
   };
 
   return (
@@ -70,20 +78,21 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick,reservas }) {
       <p>Vista del administrador</p>
       <div id='reservasOcupadas'>
         <p id='tituloOcupadas'>Reservas ocupadas</p>
-        {reservas.filter(r => r.estado === "1").map(r => ( //Para mostrar las reservas que no están ocupadas y pertenecen al día seleccionado
-              <div key={r.id_reserva} className='cuerpoReserva'>
-                <div>
-                  <p><b>Día:</b> {r.id_dias}</p>
-                  <p><b>Hora:</b> {r.hora}</p>
-                  <p><b>Nombre:</b> {r.nombre}</p>
-                  <p><b>Telfono:</b> {r.telefono}</p>
-                  <div className='botonesAdmin'>
-                  <Button color='success' className='cancelarReserva'>Cancelar</Button>
-                  <Button color='danger' className='borrarReserva'>Borrar</Button>
-                  </div>
-                </div>
+        {reservasActualizadas.map(r => (
+          <div key={r.id_reserva} className='cuerpoReserva'>
+            <div>
+              <p><b>Día:</b> {r.id_dias}</p>
+              <p><b>Hora:</b> {r.hora}</p>
+              <p><b>Nombre:</b> {r.nombre}</p>
+              <p><b>Telfono:</b> {r.telefono}</p>
+              <p><b>Peluquero:</b> {nombrePeluquero(r.id_peluquero)}</p>
+              <div className='botonesAdmin'>
+                <button className='boton cancelar' onClick={() => cancelarReserva(r.id_reserva)}>Cancelar</button>
+                <button className='boton borrar'>Borrar</button>
               </div>
-            ))}
+            </div>
+          </div>
+        ))}
       </div>
       <p>
         <Button onClick={generarTodasLasReservas}>Generar Reserva</Button>
