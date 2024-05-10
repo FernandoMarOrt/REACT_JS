@@ -3,7 +3,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Inp
 import axios from "axios";
 import { EDITARRESERVAS } from './datos';
 
-function VistaCliente({ peluqueros, reservas, dias, fetchReservas }) {
+function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReservasOcupadas }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [nombre, setNombre] = useState('');
@@ -20,7 +20,7 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas }) {
   const handleReservarClick = (reserva) => {
     setReservaSeleccionada(reserva);
     toggleModal();
-  }
+  };
 
   useEffect(() => {
     // Mostrar todas las reservas al principio sin aplicar ningún filtro
@@ -48,7 +48,7 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas }) {
         axios.put(EDITARRESERVAS, datosActualizar)
           .then(response => {
             console.log('Datos actualizados correctamente:', response.data);
-            fetchReservas(); // Actualiza las reservas después de confirmar la reserva
+            fetchReservas(); // Aquí se utiliza fetchReservas como una función para actualizar las reservas
           })
           .catch(error => {
             console.error('Error al actualizar datos:', error);
@@ -56,7 +56,8 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas }) {
       }
       toggleModal();
     }
-  };
+};
+
 
   const handleSelectChange = (event) => {
     const selectedDayInt = parseInt(event.target.value);
