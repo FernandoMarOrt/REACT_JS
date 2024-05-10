@@ -25,14 +25,14 @@ class App extends Component {
     this.toggle = this.toggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleVolverClick = this.handleVolverClick.bind(this);
-    this.fetchReservas = this.fetchReservas.bind(this);
+    this.obtenerDatos = this.obtenerDatos.bind(this);
   }
 
   componentDidMount() {
-    this.fetchReservas();
+    this.obtenerDatos();
   }
 
-  fetchReservas() {
+  obtenerDatos() {
     axios.get(PELUQUEROS)
       .then(response => {
         this.setState({ peluqueros: response.data })
@@ -104,7 +104,7 @@ class App extends Component {
   }
 
   handleVolverClick() {
-    this.fetchReservas(); // Vuelve a obtener las reservas al hacer clic en volver a la vista cliente
+    this.obtenerDatos(); // Vuelve a obtener las reservas al hacer clic en volver a la vista cliente
     this.setState({ vistaAdmin: false });
   }
 

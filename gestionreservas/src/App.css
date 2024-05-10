@@ -66,6 +66,7 @@ div.mostrarReserva{
 div.diasSeleccion{
   display: flex;
   flex-direction: row;
+  align-items: center;
   position: absolute;
   right: 35px;
   top:100px;
@@ -116,4 +117,8 @@ button.boton{
 
 button.cancelar{
   margin-right: 1rem;
+}
+
+div#borrarFiltros{
+  padding-left: 1rem;
 }

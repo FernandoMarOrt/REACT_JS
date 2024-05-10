@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
-import '../App.css';
 import axios from "axios";
 import { EDITARRESERVAS } from './datos';
 
-function VistaCliente({ peluqueros, reservas, dias }) {
+function VistaCliente({ peluqueros, reservas, dias, fetchReservas }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [nombre, setNombre] = useState('');
@@ -12,29 +11,30 @@ function VistaCliente({ peluqueros, reservas, dias }) {
   const [alerta, setAlerta] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
+  const [mostrarTodasLasReservas, setMostrarTodasLasReservas] = useState(true);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
 
-  const handleReservarClick = (reserva) => { //Abro la ventana modal de la confirmacion de reserva
+  const handleReservarClick = (reserva) => {
     setReservaSeleccionada(reserva);
     toggleModal();
   }
 
-
-
   useEffect(() => {
-    // Filtrar las reservas para mostrar todas al cargar la aplicación
-    const filteredReservas = reservas.filter(r => true); // Mostrar todas las reservas sin aplicar ningún filtro
-    setReservasFiltradas(filteredReservas);
-  }, []); // Se ejecuta solo una vez al inicio
-
+    // Mostrar todas las reservas al principio sin aplicar ningún filtro
+    if (mostrarTodasLasReservas) {
+      setReservasFiltradas(reservas);
+    } else {
+      const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay);
+      setReservasFiltradas(filteredReservas);
+    }
+  }, [reservas, mostrarTodasLasReservas, selectedDay]);
 
   const handleReservaConfirmada = () => {
-
-    if (nombre.trim() === '' || telefono.trim() === '') { //Error formulario
-      setAlerta(true); //Sale la alerta de error
+    if (nombre.trim() === '' || telefono.trim() === '') {
+      setAlerta(true);
     } else {
       if (reservaSeleccionada) {
         reservaSeleccionada.estado = "1";
@@ -48,6 +48,7 @@ function VistaCliente({ peluqueros, reservas, dias }) {
         axios.put(EDITARRESERVAS, datosActualizar)
           .then(response => {
             console.log('Datos actualizados correctamente:', response.data);
+            fetchReservas(); // Actualiza las reservas después de confirmar la reserva
           })
           .catch(error => {
             console.error('Error al actualizar datos:', error);
@@ -57,42 +58,42 @@ function VistaCliente({ peluqueros, reservas, dias }) {
     }
   };
 
-
-  //Filtrar las reservas por dia
   const handleSelectChange = (event) => {
     const selectedDayInt = parseInt(event.target.value);
-    setSelectedDay(selectedDayInt); 
-
-   
-    const filteredReservas = reservas.filter(r => selectedDayInt === 0 || parseInt(r.id_dias) === selectedDayInt);
-    setReservasFiltradas(filteredReservas);
+    setSelectedDay(selectedDayInt);
+    setMostrarTodasLasReservas(false);
   };
 
+  const handleClearFilter = () => {
+    setMostrarTodasLasReservas(true);
+    setSelectedDay(0);
+  };
 
   return (
     <div>
       <h1>Reservas</h1>
-      {/* El select con los días */}
       <div className='diasSeleccion'>
-        <strong>Selecciona una dia:</strong>&nbsp; &nbsp;
+        <strong>Selecciona un día:</strong>&nbsp; &nbsp;
         <select name="diasReserva" value={selectedDay} onChange={handleSelectChange}>
-          <option value=""></option>
-          <option value="0">Todos los días</option> {/* Opción por defecto para mostrar todas las reservas */}
+          <option value="0">Todos los días</option>
           {dias.map(d => (
             <option key={d.id_dias} value={d.id_dias}>{d.id_dias}</option>
           ))}
         </select>
-
+        <div id='borrarFiltros'>
+          {!mostrarTodasLasReservas && (
+            <Button color="danger" onClick={handleClearFilter}>Borrar filtro</Button>
+          )}
+        </div>
       </div>
       <div id='contenedorReservas'>
-        {peluqueros.map(p => ( //Muestro peluqueros
+        {peluqueros.map(p => (
           <div key={p.id_peluquero} className='reservasPeluqueros'>
             <div>
               <img src={process.env.PUBLIC_URL + "/" + p.id_peluquero + ".webp"} className='imgPeluqueros' alt={p.nombre} />
               <p className='nombrePeluqueros'>{p.nombre}</p>
             </div>
-            {console.log(reservasFiltradas)}
-            {reservasFiltradas.filter(r => r.id_peluquero === p.id_peluquero && r.estado === "0").map(r => ( //Para mostrar las reservas que no están ocupadas y pertenecen al día seleccionado
+            {reservasFiltradas.filter(r => r.id_peluquero === p.id_peluquero && r.estado === "0").map(r => (
               <div key={r.id_reserva} className='mostrarReserva'>
                 <div>
                   <p><b>Día:</b> {r.id_dias}</p>
@@ -105,7 +106,6 @@ function VistaCliente({ peluqueros, reservas, dias }) {
           </div>
         ))}
       </div>
-      {/* Ventana Modal para la confirmación de la reserva */}
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Confirmar reserva</ModalHeader>
         <ModalBody>
