@@ -107,18 +107,18 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <h1>Gestion Reservas</h1>
-          <img src={user} id="user" alt="user" onClick={this.toggle} />
+          {!vistaAdmin && <img src={user} id="user" alt="user" onClick={this.toggle} />}
         </header>
         <main>
-          <Login isOpen={modal} toggle={this.toggle} handleSubmit={this.handleSubmit} info={info} />
+          {!vistaAdmin && <Login isOpen={modal} toggle={this.toggle} handleSubmit={this.handleSubmit} info={info} />}
           {vistaAdmin ? <Admin onVolverClick={this.handleVolverClick} peluqueros={this.state.peluqueros} reservas={this.state.reservas} dias={this.state.dias} plantilla={this.state.plantilla} /> :
-           <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas} dias={this.state.dias} fetchReservas={this.obtenerDatos} />}
-
+            <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas} dias={this.state.dias} fetchReservas={this.obtenerDatos} />}
         </main>
         <footer></footer>
       </div>
     );
   }
+  
 }
 
 export default App;
