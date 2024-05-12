@@ -6,7 +6,6 @@
 
 
 header{
-  border: 1px solid red;
   padding: 0 1rem;
   display: flex;
   flex-direction: row;
@@ -36,7 +35,8 @@ div.contenedorReservas{
 div.reservasPeluqueros{
   display: flex;
   flex-direction: row;
-  border: 1px solid blue;
+  border: 2px solid black;
+  border-radius: 30px;
   padding: 1rem;
   margin: 1rem 0;
 }
@@ -76,7 +76,9 @@ div#reservasOcupadas{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  border: 1px solid red;
+  border: 2px solid black;
+  border-radius: 30px;
+  margin-bottom: 2rem;
 }
 
 p#tituloOcupadas{

@@ -9,9 +9,8 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [alerta, setAlerta] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(0);
+  const [selectedDay, setSelectedDay] = useState(1); // Cambiamos el valor inicial a 1
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
-  const [mostrarTodasLasReservas, setMostrarTodasLasReservas] = useState(true);
 
   const toggleModal = () => {
     setModalOpen(!modalOpen);
@@ -23,14 +22,10 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
   };
 
   useEffect(() => {
-    // Mostrar todas las reservas al principio sin aplicar ningún filtro
-    if (mostrarTodasLasReservas) {
-      setReservasFiltradas(reservas);
-    } else {
-      const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay);
-      setReservasFiltradas(filteredReservas);
-    }
-  }, [reservas, mostrarTodasLasReservas, selectedDay]);
+    // Filtrar las reservas por el día seleccionado al principio
+    const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay);
+    setReservasFiltradas(filteredReservas);
+  }, [reservas, selectedDay]);
 
   const handleReservaConfirmada = () => {
     if (nombre.trim() === '' || telefono.trim() === '') {
@@ -48,7 +43,7 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
         axios.put(EDITARRESERVAS, datosActualizar)
           .then(response => {
             console.log('Datos actualizados correctamente:', response.data);
-            fetchReservas(); // Aquí se utiliza fetchReservas como una función para actualizar las reservas
+            fetchReservas(); // Actualizar las reservas
           })
           .catch(error => {
             console.error('Error al actualizar datos:', error);
@@ -56,18 +51,11 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
       }
       toggleModal();
     }
-};
-
+  };
 
   const handleSelectChange = (event) => {
     const selectedDayInt = parseInt(event.target.value);
     setSelectedDay(selectedDayInt);
-    setMostrarTodasLasReservas(false);
-  };
-
-  const handleClearFilter = () => {
-    setMostrarTodasLasReservas(true);
-    setSelectedDay(0);
   };
 
   return (
@@ -76,16 +64,10 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
       <div className='diasSeleccion'>
         <strong>Selecciona un día:</strong>&nbsp; &nbsp;
         <select name="diasReserva" value={selectedDay} onChange={handleSelectChange}>
-          <option value="0">Todos los días</option>
           {dias.map(d => (
             <option key={d.id_dias} value={d.id_dias}>{d.id_dias}</option>
           ))}
         </select>
-        <div id='borrarFiltros'>
-          {!mostrarTodasLasReservas && (
-            <Button color="danger" onClick={handleClearFilter}>Borrar filtro</Button>
-          )}
-        </div>
       </div>
       <div id='contenedorReservas'>
         {peluqueros.map(p => (
@@ -122,7 +104,7 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
             </FormGroup>
             <FormGroup>
               <Label for="telefono">Teléfono:</Label>
-              <Input type="tel" name="telefono" id="telefono" placeholder='Rellene con su teléfono por favor' value={telefono} onChange={(e) => setTelefono(e.target.value)} />
+              <Input type="tel" name="telefono" id="telefono" maxLength={9} placeholder='Rellene con su teléfono por favor' value={telefono} onChange={(e) => setTelefono(e.target.value)} />
               {alerta && telefono.trim() === '' && <Alert color="danger">Por favor, complete este campo.</Alert>}
             </FormGroup>
           </Form>

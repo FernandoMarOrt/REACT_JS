@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Alert } from 'reactstrap';
 import axios from 'axios';
-import { INSERTARRESERVAS } from './datos';
-import { EDITARESTADORESERVAS } from './datos';
+import { INSERTARRESERVAS, EDITARESTADORESERVAS, BORRARRESERBAS} from './datos';
 
 function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const [reservasGeneradas, setReservasGeneradas] = useState(false);
   const [reservasActualizadas, setReservasActualizadas] = useState([]);
+  const [borrarAlert, setBorrarAlert] = useState(false); // Estado para mostrar el alert de borrar reserva
+  const [cancelarAlert, setCancelarAlert] = useState(false); // Estado para mostrar el alert de cancelar reserva
 
   useEffect(() => {
     setReservasActualizadas(reservas.filter(r => r.estado === "1"));
@@ -26,6 +27,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       console.error('Error al insertar reserva:', error);
     });
   };
+
   const cancelarReserva = (id_reserva) => {
     const datosActualizar = {
       id_reserva: id_reserva,
@@ -38,13 +40,35 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       .then(response => {
         console.log('Reserva cancelada con éxito:', response.data);
         setReservasActualizadas(reservasActualizadas.filter(r => r.id_reserva !== id_reserva));
+        setCancelarAlert(true); // Activar el alert de cancelar reserva
+
+        //Despues de 1,5s se va alerta
+        setTimeout(() => {
+          setCancelarAlert(false);
+        }, 1500);
       })
       .catch(error => {
         console.error('Error al cancelar reserva:', error);
       });
   };
-  
 
+  const borrarReserva = (id_reserva) => {
+    axios.delete(`${BORRARRESERBAS}?id_reserva=${id_reserva}`)
+      .then(response => {
+        console.log('Reserva borrada con éxito:');
+        setReservasActualizadas(reservasActualizadas.filter(r => r.id_reserva !== id_reserva));
+        setBorrarAlert(true); // Activar el alert de borrar reserva
+
+        // Después de 1,5s se va la alerta
+        setTimeout(() => {
+          setBorrarAlert(false);
+        }, 1500);
+      })
+      .catch(error => {
+        console.error('Error al borrar reserva:', error);
+      });
+  };
+  
   const generarTodasLasReservas = () => {
     const arraysDeHoras = separarHoras(plantilla); // Separo las horas
     console.log(arraysDeHoras);
@@ -75,7 +99,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
 
   return (
     <div>
-      <p>Vista del administrador</p>
       <div id='reservasOcupadas'>
         <p id='tituloOcupadas'>Reservas ocupadas</p>
         {reservasActualizadas.map(r => (
@@ -88,15 +111,17 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
               <p><b>Peluquero:</b> {nombrePeluquero(r.id_peluquero)}</p>
               <div className='botonesAdmin'>
                 <button className='boton cancelar' onClick={() => cancelarReserva(r.id_reserva)}>Cancelar</button>
-                <button className='boton borrar'>Borrar</button>
+                <button className='boton borrar' onClick={() => borrarReserva(r.id_reserva)}>Borrar</button>
               </div>
             </div>
           </div>
         ))}
       </div>
+      {cancelarAlert && <Alert color="success" onClick={() => setCancelarAlert(false)}>Reserva cancelada con éxito</Alert>}
+      {borrarAlert && <Alert color="success" onClick={() => setBorrarAlert(false)}>Reserva borrada con éxito</Alert>}
       <p>
-        <Button onClick={generarTodasLasReservas}>Generar Reserva</Button>
-        {reservasGeneradas && <Alert color="success">Reserva realizada con éxito</Alert>}
+        <Button onClick={generarTodasLasReservas}>Generar Reservas</Button>
+        {reservasGeneradas && <Alert color="success">Reservas generadas con éxito</Alert>}
       </p>
       <p>
         <Button onClick={onVolverClick}>Volver a la vista cliente</Button>
