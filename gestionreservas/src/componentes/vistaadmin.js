@@ -130,7 +130,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       <p>
         {showGenerarReservaButton && <Button onClick={generarTodasLasReservas}>Generar Reservas</Button>}
         {reservasGeneradas && <Alert color="success">  <span>Generando reservas...   </span>
-          <img src="./img/carga.gif" alt="Cargando" /></Alert>}
+          <img src={`${process.env.PUBLIC_URL}/${"carga.gif"}`} alt="Cargando" /></Alert>}
       </p>
       <p>
         <Button onClick={onVolverClick}>Volver a la vista cliente</Button>
