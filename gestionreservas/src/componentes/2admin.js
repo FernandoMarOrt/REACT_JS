@@ -9,12 +9,9 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const [borrarAlert, setBorrarAlert] = useState(false);
   const [cancelarAlert, setCancelarAlert] = useState(false);
   const [reservasRegistradas, setReservasRegistradas] = useState(new Set());
-  const [showGenerarReservaButton, setShowGenerarReservaButton] = useState(true);
 
   useEffect(() => {
     setReservasActualizadas(reservas.filter(r => r.estado === "1"));
-    // Actualizar el estado de visualización del botón
-    setShowGenerarReservaButton(reservas.length === 0);
   }, [reservas]);
 
   const generarReserva = (id_peluquero, id_dia, hora, estado) => {
@@ -93,7 +90,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
     setReservasGeneradas(true);
     setTimeout(() => {
       setReservasGeneradas(false);
-    }, 10000); // Después de 2 segundos, la alerta se oculta
+    }, 2000); // Después de 2 segundos, la alerta se oculta
   };
 
   const nombrePeluquero = (id_peluquero) => {
@@ -128,15 +125,13 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       {cancelarAlert && <Alert color="success" onClick={() => setCancelarAlert(false)}>Reserva cancelada con éxito</Alert>}
       {borrarAlert && <Alert color="success" onClick={() => setBorrarAlert(false)}>Reserva borrada con éxito</Alert>}
       <p>
-        {showGenerarReservaButton && <Button onClick={generarTodasLasReservas}>Generar Reservas</Button>}
-        {reservasGeneradas && <Alert color="success">  <span>Generando reservas...   </span>
-          <img src="./img/carga.gif" alt="Cargando" /></Alert>}
+        <Button onClick={generarTodasLasReservas}>Generar Reservas</Button>
+        {reservasGeneradas && <Alert color="success">Reservas generadas con éxito</Alert>}
       </p>
       <p>
         <Button onClick={onVolverClick}>Volver a la vista cliente</Button>
       </p>
     </div>
-    
   );
 }
 
