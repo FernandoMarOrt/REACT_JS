@@ -19,6 +19,7 @@ class App extends Component {
     reservas: [],
     dias: [],
     plantilla: [],
+    fechaActual: new Date(),
   };
 
   toggle = () => {
@@ -112,7 +113,7 @@ class App extends Component {
         <main>
           {!vistaAdmin && <Login isOpen={modal} toggle={this.toggle} handleSubmit={this.handleSubmit} info={info} />}
           {vistaAdmin ? <Admin onVolverClick={this.handleVolverClick} peluqueros={this.state.peluqueros} reservas={this.state.reservas} dias={this.state.dias} plantilla={this.state.plantilla} /> :
-            <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas} dias={this.state.dias} fetchReservas={this.obtenerDatos} />}
+            <Cliente peluqueros={this.state.peluqueros} reservas={this.state.reservas} dias={this.state.dias} fetchReservas={this.obtenerDatos} fechaActual={this.state.fechaActual}/>}
         </main>
         <footer></footer>
       </div>

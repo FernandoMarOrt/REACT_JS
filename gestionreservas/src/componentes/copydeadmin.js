@@ -11,8 +11,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const [reservasRegistradas, setReservasRegistradas] = useState(new Set());
   const [showGenerarReservaButton, setShowGenerarReservaButton] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(""); // Mes predeterminado: vacío
-  const [months, setMonths] = useState([]);
-  const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
   useEffect(() => {
     setReservasActualizadas(reservas.filter(r => r.estado === "1"));
@@ -21,10 +19,11 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
 
   useEffect(() => {
     const currentMonthIndex = new Date().getMonth();
-    setCurrentMonthIndex(currentMonthIndex);
-    const months = getMonthNames();
-    const filteredMonths = months.slice(currentMonthIndex); // Obtener los meses desde el mes actual hasta diciembre
-    setMonths(filteredMonths);
+    const months = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    const filteredMonths = months.slice(currentMonthIndex);
     setSelectedMonth(filteredMonths[0]); // Establecer el mes actual como el predeterminado
   }, []);
 
@@ -51,6 +50,11 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   };
 
   const generarReservasPorMes = () => {
+    const currentMonthIndex = new Date().getMonth();
+    const months = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
     const selectedMonths = months.slice(currentMonthIndex); // Obtener los meses desde el mes actual hasta diciembre
 
     const arraysDeHoras = separarHoras(plantilla);
@@ -120,13 +124,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       .catch(error => {
         console.error('Error al borrar reserva:', error);
       });
-  };
-
-  const getMonthNames = () => {
-    return [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-    ];
   };
 
   return (

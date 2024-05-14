@@ -3,7 +3,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Inp
 import axios from "axios";
 import { EDITARRESERVAS } from './datos';
 
-function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReservasOcupadas }) {
+function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual}) {
   const [modalOpen, setModalOpen] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [nombre, setNombre] = useState('');
@@ -24,9 +24,9 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
 
   useEffect(() => {
     // Filtrar las reservas por el día seleccionado al principio en 1
-    const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay);
+    const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay && r.mes === selectedMonth);
     setReservasFiltradas(filteredReservas);
-  }, [reservas, selectedDay]);
+  }, [reservas, selectedDay, selectedMonth]);
 
   const handleReservaConfirmada = () => {
     if (nombre.trim() === '' || telefono.trim() === '') {
@@ -60,7 +60,23 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
   };
 
   const handleMonthSelectChange = (event) => {
-    setSelectedMonth(event.target.value);
+    const selectedMonthValue = event.target.value;
+    setSelectedMonth(selectedMonthValue);
+  };
+
+  // Obtener los días correspondientes al mes seleccionado
+  const diasDelMes = () => {
+    switch(selectedMonth) {
+      case 'febrero':
+        return Array.from({ length: 28 }, (_, i) => i + 1);
+      case 'abril':
+      case 'junio':
+      case 'septiembre':
+      case 'noviembre':
+        return Array.from({ length: 30 }, (_, i) => i + 1);
+      default:
+        return Array.from({ length: 31 }, (_, i) => i + 1);
+    }
   };
 
   return (
@@ -72,8 +88,8 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
       <div className='diasSeleccion'>
         <strong>Selecciona un día:</strong>&nbsp; &nbsp;
         <select name="diasReserva" value={selectedDay} onChange={handleSelectChange}>
-          {dias.map(d => (
-            <option key={d.id_dias} value={d.id_dias}>{d.id_dias}</option>
+          {diasDelMes().map(dia => (
+            <option key={dia} value={dia}>{dia}</option>
           ))}
         </select>
       </div>
