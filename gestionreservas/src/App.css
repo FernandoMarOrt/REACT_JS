@@ -92,7 +92,7 @@ div.cuerpoReserva{
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  height: 250px;
+  height: 300px;
   justify-content: center;
   color: black;
   background-color: #f5c86a;
@@ -123,4 +123,37 @@ button.cancelar{
 
 div#borrarFiltros{
   padding-left: 1rem;
+}
+
+img#imagenCarga{
+  width: 40px;
+}
+
+
+div.mesSeleccion{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  right: 280px;
+  top:100px;
+}
+
+
+div#mensajeSinReservas{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: bold;
+  font-size: 20px;
+  margin-left: 30rem;
+}
+
+div.mesSeleccionado{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  left: 35px;
+  top:100px;
 }

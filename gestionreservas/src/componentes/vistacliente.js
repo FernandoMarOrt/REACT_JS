@@ -9,7 +9,8 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [alerta, setAlerta] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(1); // Cambiamos el valor inicial a 1
+  const [selectedDay, setSelectedDay] = useState(1); // Filtro que comienza en 1
+  const [selectedMonth, setSelectedMonth] = useState("enero"); // Mes predeterminado: enero
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
 
   const toggleModal = () => {
@@ -22,7 +23,7 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
   };
 
   useEffect(() => {
-    // Filtrar las reservas por el día seleccionado al principio
+    // Filtrar las reservas por el día seleccionado al principio en 1
     const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay);
     setReservasFiltradas(filteredReservas);
   }, [reservas, selectedDay]);
@@ -58,15 +59,39 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
     setSelectedDay(selectedDayInt);
   };
 
+  const handleMonthSelectChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
   return (
     <div>
       <h1>Reservas</h1>
+      <div className='mesSeleccionado'>
+        <p><strong>Mes seleccionado:</strong> {selectedMonth}</p>
+      </div>
       <div className='diasSeleccion'>
         <strong>Selecciona un día:</strong>&nbsp; &nbsp;
         <select name="diasReserva" value={selectedDay} onChange={handleSelectChange}>
           {dias.map(d => (
             <option key={d.id_dias} value={d.id_dias}>{d.id_dias}</option>
           ))}
+        </select>
+      </div>
+      <div className='mesSeleccion'>
+        <strong>Selecciona un mes:</strong>&nbsp; &nbsp;
+        <select name="mesReserva" value={selectedMonth} onChange={handleMonthSelectChange}>
+          <option key={"enero"} value={"enero"}>Enero</option>
+          <option key={"febrero"} value={"febrero"}>Febrero</option>
+          <option key={"marzo"} value={"marzo"}>Marzo</option>
+          <option key={"abril"} value={"abril"}>Abril</option>
+          <option key={"mayo"} value={"mayo"}>Mayo</option>
+          <option key={"junio"} value={"junio"}>Junio</option>
+          <option key={"julio"} value={"julio"}>Julio</option>
+          <option key={"agosto"} value={"agosto"}>Agosto</option>
+          <option key={"septiembre"} value={"septiembre"}>Septiembre</option>
+          <option key={"octubre"} value={"octubre"}>Octubre</option>
+          <option key={"noviembre"} value={"noviembre"}>Noviembre</option>
+          <option key={"diciembre"} value={"diciembre"}>Diciembre</option>
         </select>
       </div>
       <div id='contenedorReservas'>
@@ -76,16 +101,20 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, updateReserva
               <img src={process.env.PUBLIC_URL + "/" + p.id_peluquero + ".webp"} className='imgPeluqueros' alt={p.nombre} />
               <p className='nombrePeluqueros'>{p.nombre}</p>
             </div>
-            {reservasFiltradas.filter(r => r.id_peluquero === p.id_peluquero && r.estado === "0").map(r => (
-              <div key={r.id_reserva} className='mostrarReserva'>
-                <div>
-                  <p><b>Día:</b> {r.id_dias}</p>
-                  <p><b>Hora:</b> {r.hora}</p>
-                  <p><b>Precio:</b> {p.precio}€</p>
-                  <Button color='success' id='confirmarReserva' onClick={() => handleReservarClick(r)}>Reservar</Button>
+            {reservasFiltradas.filter(r => r.id_peluquero === p.id_peluquero && r.estado === "0").length > 0 ? (
+              reservasFiltradas.filter(r => r.id_peluquero === p.id_peluquero && r.estado === "0").map(r => (
+                <div key={r.id_reserva} className='mostrarReserva'>
+                  <div>
+                    <p><b>Día:</b> {r.id_dias}</p>
+                    <p><b>Hora:</b> {r.hora}</p>
+                    <p><b>Precio:</b> {p.precio}€</p>
+                    <Button color='success' id='confirmarReserva' onClick={() => handleReservarClick(r)}>Reservar</Button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <div id='mensajeSinReservas'>No hay reservas disponibles para este mes y este día, lo sentimos.</div>
+            )}
           </div>
         ))}
       </div>
