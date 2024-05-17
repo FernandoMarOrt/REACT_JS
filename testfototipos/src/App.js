@@ -147,7 +147,7 @@ class App extends Component {
 
     axios({
       method: 'post',
-      url: "https://thematic-learning.com/2DAW2024/FERNANDO/recuento/index.php",
+      url: "https://thematic-learning.com/2DAW2024/FERNANDO/Test/recuento/index.php",
       data: {
         array: resultadosTotales
       }

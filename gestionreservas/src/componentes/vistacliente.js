@@ -9,8 +9,8 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [alerta, setAlerta] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(1); //Filtro dia que comienza en 1 para los dias
-  const [selectedMonth, setSelectedMonth] = useState("enero"); //Filtro mes que empieza en enero
+  const [DiaSeleccionado, setDiaSeleccionado] = useState(1); //Filtro dia que comienza en 1 para los dias
+  const [MesSeleccionado, setMesSeleccionado] = useState("enero"); //Filtro mes que empieza en enero
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
 
   //Abre/Cierra Ventana modal
@@ -25,12 +25,11 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
   };
 
 
-   // Filtrar las reservas por el día seleccionado al principio en 1
+   //Filtrar las reservas por el día seleccionado al principio en 1
   useEffect(() => {
-   
-    const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay && r.mes === selectedMonth);
+    const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === DiaSeleccionado && r.mes === MesSeleccionado);
     setReservasFiltradas(filteredReservas);
-  }, [reservas, selectedDay, selectedMonth]);
+  }, [reservas, DiaSeleccionado, MesSeleccionado]);
 
 
   //Cuando le doy click confirmo la reserva
@@ -62,19 +61,19 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
 
   //Filtro por el dia
   const handleSelectChange = (event) => {
-    const selectedDayInt = parseInt(event.target.value);
-    setSelectedDay(selectedDayInt);
+    const DiaSeleccionadoInt = parseInt(event.target.value);
+    setDiaSeleccionado(DiaSeleccionadoInt);
   };
 
     //Filtro por el mes
-  const handleMonthSelectChange = (event) => {
-    const selectedMonthValue = event.target.value;
-    setSelectedMonth(selectedMonthValue);
+  const handleMesSelectChange = (event) => {
+    const MesSeleccionadoValue = event.target.value;
+    setMesSeleccionado(MesSeleccionadoValue);
   };
 
   //Obtener los dias correspondientes al mes seleccionado
   const diasDelMes = () => {
-    switch(selectedMonth) {
+    switch(MesSeleccionado) {
       case 'febrero':
         return Array.from({ length: 28 }, (_, i) => i + 1);
       case 'abril':
@@ -91,11 +90,11 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
     <div>
       <h1>Reservas</h1>
       <div className='mesSeleccionado'>
-        <p><strong>Mes seleccionado:</strong> {selectedMonth}</p>
+        <p><strong>Mes seleccionado:</strong> {MesSeleccionado}</p>
       </div>
       <div className='diasSeleccion'>
         <strong>Selecciona un día:</strong>&nbsp; &nbsp;
-        <select name="diasReserva" value={selectedDay} onChange={handleSelectChange}>
+        <select name="diasReserva" value={DiaSeleccionado} onChange={handleSelectChange}>
           {diasDelMes().map(dia => (
             <option key={dia} value={dia}>{dia}</option>
           ))}
@@ -103,7 +102,7 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
       </div>
       <div className='mesSeleccion'>
         <strong>Selecciona un mes:</strong>&nbsp; &nbsp;
-        <select name="mesReserva" value={selectedMonth} onChange={handleMonthSelectChange}>
+        <select name="mesReserva" value={MesSeleccionado} onChange={handleMesSelectChange}>
           <option key={"enero"} value={"enero"}>Enero</option>
           <option key={"febrero"} value={"febrero"}>Febrero</option>
           <option key={"marzo"} value={"marzo"}>Marzo</option>

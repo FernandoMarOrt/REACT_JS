@@ -10,11 +10,9 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const [cancelarAlert, setCancelarAlert] = useState(false);
   const [reservasRegistradas, setReservasRegistradas] = useState(new Set());
   const [MesSeleccionado, setMesSeleccionado] = useState("enero");
-  const [MesSeleccionado2, setMesSeleccionado2] = useState("");
   const [meses, setMeses] = useState([]);
   const [DiaSeleccionado, setDiaSeleccionado] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [mesActual, setMesActual] = useState(0);
 
   useEffect(() => {
     // Filtrar reservas y actualizar estado
@@ -23,12 +21,8 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   }, [reservas, MesSeleccionado, DiaSeleccionado]);
 
   useEffect(() => {
-    // Lógica para obtener los nombres de los meses y establecer el mes seleccionado por defecto
-    const mesActual = new Date().getMonth();
+    // Lógica para obtener los nombres de los meses
     const meses = getNombreMeses();
-    setMesActual(mesActual);
-    setMesSeleccionado(meses[mesActual]);
-    setMesSeleccionado2(meses[mesActual]);
     setMeses(meses);
   }, []);
 
@@ -63,12 +57,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
     setDiaSeleccionado(DiaSeleccionadoInt);
   };
 
-  // Cojo el valor del mes para el segundo select
-  const handleMesSelectChange2 = (event) => {
-    const MesSeleccionadoValue = event.target.value;
-    setMesSeleccionado2(MesSeleccionadoValue);
-  };
-
   // Generar las reservas por mes
   const generarReservasPorMes = () => {
     setLoading(true);
@@ -85,14 +73,14 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       let diasParaGenerar = dias;
   
       // Si el mes seleccionado es el mes actual entonces empiezo a generar reservas desde el día actual
-      if (MesSeleccionado2 === meses[mesActual]) {
+      if (MesSeleccionado === meses[mesActual]) {
         diasParaGenerar = dias.filter(dia => parseInt(dia.id_dias) >= currentDate);
       }
   
       for (const dia of diasParaGenerar) {
         for (const hora of horasDelPeluquero) {
-          if (selectedmeses.includes(MesSeleccionado2)) { // Solo generar reservas para el mes seleccionado o meses posteriores
-            generarReserva(peluquero.id_peluquero, dia.id_dias, hora, 0, MesSeleccionado2);
+          if (selectedmeses.includes(MesSeleccionado)) { // Solo generar reservas para el mes seleccionado o meses posteriores
+            generarReserva(peluquero.id_peluquero, dia.id_dias, hora, 0, MesSeleccionado);
           }
         }
       }
@@ -170,17 +158,13 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
     <div>
       <div className='filter-container'>
         <div className='filter-select'>
-          <strong>Selecciona un mes para generar reservas:</strong>&nbsp; &nbsp;
-          <select name="GenerarReservasMes" id='GenerarReservasMes' value={MesSeleccionado} onChange={handleMesSelectChange}>
+          <strong>Selecciona un mes:</strong>&nbsp; &nbsp;
+          <select name="mesReserva" value={MesSeleccionado} onChange={handleMesSelectChange}>
             {meses.map((month, index) => (
-              index >= mesActual && (
-                <option key={index} value={month}>
-                  {month.charAt(0).toUpperCase() + month.slice(1)}
-                </option>
-              )
+              <option key={index} value={month}>{month.charAt(0).toUpperCase() + month.slice(1)}</option>
             ))}
           </select>
-      </div>
+        </div>
         <div className='filter-select'>
           <strong>Selecciona un día:</strong>&nbsp; &nbsp;
           <select name="diasReserva" value={DiaSeleccionado} onChange={handleDiaSelectChange}>
@@ -190,6 +174,8 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
           </select>
         </div>
       </div>
+      <Button onClick={generarReservasPorMes}>Generar Reservas</Button>
+      {loading && <Alert color="success"><span>Generando reservas...</span><img id='imagenCarga' src={`${process.env.PUBLIC_URL}/${"carga.gif"}`} alt="Cargando" /></Alert>}
       <div id='reservasOcupadas'>
         <p id='tituloOcupadas'>Reservas ocupadas</p>
         {reservasActualizadas.map(r => (
@@ -211,23 +197,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       </div>
       {cancelarAlert && <Alert color="success" onClick={() => setCancelarAlert(false)}>Reserva cancelada con éxito</Alert>}
       {borrarAlert && <Alert color="success" onClick={() => setBorrarAlert(false)}>Reserva borrada con éxito</Alert>}
-      <div className='filter-container'>
-        <div className='filter-select'>
-          <strong>Selecciona un mes para generar reservas:</strong>&nbsp; &nbsp;
-          <select name="GenerarReservasMes2" id='GenerarReservasMes2' value={MesSeleccionado2} onChange={handleMesSelectChange2}>
-            {meses.map((month, index) => (
-              index >= mesActual && (
-                <option key={index} value={month}>
-                  {month.charAt(0).toUpperCase() + month.slice(1)}
-                </option>
-              )
-            ))}
-          </select>
-        </div>
-      </div>
-      <Button onClick={generarReservasPorMes}>Generar Reservas</Button>
-      {loading && <Alert color="success"><span>Generando reservas...</span><img id='imagenCarga' src={`${process.env.PUBLIC_URL}/${"carga.gif"}`} alt="Cargando" /></Alert>}
-      <p><br></br>
+      <p>
         <Button onClick={onVolverClick}>Volver a la vista cliente</Button>
       </p>
     </div>

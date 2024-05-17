@@ -32,8 +32,8 @@ class App extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const sendUserId = event.target.usuario.value;
-    const sendUserPsw = event.target.clave.value;
-    const loggedInUser = this.checkLogin(sendUserId, sendUserPsw);
+    const sendUserPass = event.target.clave.value;
+    const loggedInUser = this.comprobarLogin(sendUserId, sendUserPass);
     if (loggedInUser) {
       this.setState({
         usuarioActual: loggedInUser,
@@ -45,10 +45,10 @@ class App extends Component {
   }
 
   //Compruebo si se ha logeado
-  checkLogin = (idToCheck, pswToCheck) => {
+  comprobarLogin = (idUsu, passUsu) => {
     const usuarios = [{ userId: "admin", password: "1234" }];
-    if (idToCheck && pswToCheck) {
-      const encontrado = usuarios.find(user => user.userId === idToCheck && user.password === pswToCheck);
+    if (idUsu && passUsu) {
+      const encontrado = usuarios.find(user => user.userId === idUsu && user.password === passUsu);
       if (encontrado) {
         return encontrado;
       } else {
@@ -61,6 +61,7 @@ class App extends Component {
     }
   }
 
+  //Llamo a la funcion para obtener todos los datos
   componentDidMount() {
     this.obtenerDatos();
   }
