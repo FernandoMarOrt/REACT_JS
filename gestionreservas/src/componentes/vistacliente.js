@@ -9,25 +9,31 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [alerta, setAlerta] = useState(false);
-  const [selectedDay, setSelectedDay] = useState(1); // Filtro que comienza en 1
-  const [selectedMonth, setSelectedMonth] = useState("enero"); // Mes predeterminado: enero
+  const [selectedDay, setSelectedDay] = useState(1); //Filtro dia que comienza en 1 para los dias
+  const [selectedMonth, setSelectedMonth] = useState("enero"); //Filtro mes que empieza en enero
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
 
+  //Abre/Cierra Ventana modal
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
 
+  //Llamadar a la modal
   const handleReservarClick = (reserva) => {
     setReservaSeleccionada(reserva);
     toggleModal();
   };
 
+
+   // Filtrar las reservas por el día seleccionado al principio en 1
   useEffect(() => {
-    // Filtrar las reservas por el día seleccionado al principio en 1
+   
     const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === selectedDay && r.mes === selectedMonth);
     setReservasFiltradas(filteredReservas);
   }, [reservas, selectedDay, selectedMonth]);
 
+
+  //Cuando le doy click confirmo la reserva
   const handleReservaConfirmada = () => {
     if (nombre.trim() === '' || telefono.trim() === '') {
       setAlerta(true);
@@ -44,7 +50,7 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
         axios.put(EDITARRESERVAS, datosActualizar)
           .then(response => {
             console.log('Datos actualizados correctamente:', response.data);
-            fetchReservas(); // Actualizar las reservas
+            fetchReservas(); //Actualizar las reservas para que al confirmar desaparezcan
           })
           .catch(error => {
             console.error('Error al actualizar datos:', error);
@@ -54,17 +60,19 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual})
     }
   };
 
+  //Filtro por el dia
   const handleSelectChange = (event) => {
     const selectedDayInt = parseInt(event.target.value);
     setSelectedDay(selectedDayInt);
   };
 
+    //Filtro por el mes
   const handleMonthSelectChange = (event) => {
     const selectedMonthValue = event.target.value;
     setSelectedMonth(selectedMonthValue);
   };
 
-  // Obtener los días correspondientes al mes seleccionado
+  //Obtener los dias correspondientes al mes seleccionado
   const diasDelMes = () => {
     switch(selectedMonth) {
       case 'febrero':

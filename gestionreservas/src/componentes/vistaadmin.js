@@ -10,7 +10,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const [cancelarAlert, setCancelarAlert] = useState(false);
   const [reservasRegistradas, setReservasRegistradas] = useState(new Set());
   const [showGenerarReservaButton, setShowGenerarReservaButton] = useState(true);
-  const [selectedMonth, setSelectedMonth] = useState(""); // Mes predeterminado: vacío
+  const [selectedMonth, setSelectedMonth] = useState("");
   const [months, setMonths] = useState([]);
   const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
 
@@ -24,11 +24,12 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
     setCurrentMonthIndex(currentMonthIndex);
     const months = getMonthNames();
     setMonths(months);
-    setSelectedMonth(months[currentMonthIndex]); // Establecer el mes actual como predeterminado
+    setSelectedMonth(months[currentMonthIndex]); //El mes actual lo pongo como predetarminado
   }, []);
 
 
 
+  //Genero las reservas de una en una
   const generarReserva = (id_peluquero, id_dia, hora, estado, mes) => {
     axios.post(INSERTARRESERVAS, {
       id_peluquero: id_peluquero,
@@ -47,9 +48,19 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       });
   };
 
+
+
+  //Cojo el valor del mes
   const handleSelectChange = (event) => {
     setSelectedMonth(event.target.value);
   };
+
+
+
+
+
+
+  //Genero las reservas por mes
   const generarReservasPorMes = () => {
     const currentMonthIndex = new Date().getMonth();
     const currentDate = new Date().getDate();
@@ -63,7 +74,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       const horasDelPeluquero = arraysDeHoras[i];
       let diasParaGenerar = dias;
   
-      // Si el mes seleccionado es el mes actual, empezamos a generar reservas desde el día actual
+      // Si el mes seleccionado es el mes actual entonces empiezo a generar reservas desde el día actual
       if (selectedMonth === months[currentMonthIndex]) {
         diasParaGenerar = dias.filter(dia => parseInt(dia.id_dias) >= currentDate);
       }
@@ -83,16 +94,20 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
     }, 10000);
   };
   
-
+  //Busco el nombre del peluquero para la reserva
   const nombrePeluquero = (id_peluquero) => {
     const peluquero = peluqueros.find(p => p.id_peluquero === id_peluquero);
     return peluquero ? peluquero.nombre : 'Desconocido';
   };
 
+
+  //Separo horas
   const separarHoras = (plantilla) => {
     return plantilla.map(p => p.hora.split(","));
   };
 
+
+  //Cancelo la reserva
   const cancelarReserva = (id_reserva) => {
     const datosActualizar = {
       id_reserva: id_reserva,
@@ -101,6 +116,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       estado: 0
     };
 
+    //Pongo estado a 0 para que vuelva a estar disponible
     axios.put(EDITARESTADORESERVAS, datosActualizar)
       .then(response => {
         console.log('Reserva cancelada con éxito:', response.data);
@@ -116,6 +132,8 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       });
   };
 
+
+  //Borro la reserva
   const borrarReserva = (id_reserva) => {
     axios.delete(`${BORRARRESERBAS}?id_reserva=${id_reserva}`)
       .then(response => {
@@ -132,6 +150,8 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
       });
   };
 
+
+  //Meses con nombre para la fecha
   const getMonthNames = () => {
     return [
       'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
@@ -141,7 +161,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
 
   return (
     <div>
-
       <div id='reservasOcupadas'>
         <p id='tituloOcupadas'>Reservas ocupadas</p>
         {reservasActualizadas.map(r => (

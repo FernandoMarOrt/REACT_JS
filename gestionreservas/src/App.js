@@ -28,6 +28,7 @@ class App extends Component {
     }));
   }
 
+  //Envio datos del formulario de login
   handleSubmit = (event) => {
     event.preventDefault();
     const sendUserId = event.target.usuario.value;
@@ -43,6 +44,7 @@ class App extends Component {
     }
   }
 
+  //Compruebo si se ha logeado
   checkLogin = (idToCheck, pswToCheck) => {
     const usuarios = [{ userId: "admin", password: "1234" }];
     if (idToCheck && pswToCheck) {
@@ -63,6 +65,7 @@ class App extends Component {
     this.obtenerDatos();
   }
 
+  //Obtengo todos los datos
   obtenerDatos = () => {
     axios.get(PELUQUEROS)
       .then(response => {
@@ -97,8 +100,9 @@ class App extends Component {
       });
   }
 
+  //Vuelve a obtener las reservas al hacer clic en volver a la vista cliente desde vista admin
   handleVolverClick = () => {
-    this.obtenerDatos(); // Vuelve a obtener las reservas al hacer clic en volver a la vista cliente
+    this.obtenerDatos(); 
     this.setState({ vistaAdmin: false });
   }
 

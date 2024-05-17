@@ -1,4 +1,3 @@
-// Login.js
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button } from 'reactstrap';
 
