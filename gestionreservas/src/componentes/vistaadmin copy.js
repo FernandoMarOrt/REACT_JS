@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
 import axios from 'axios';
-import { INSERTARRESERVAS, EDITARESTADORESERVAS, BORRARRESERBAS, REPETIDORESERVAS } from './datos';
+import { INSERTARRESERVAS, EDITARESTADORESERVAS, BORRARRESERBAS } from './datos';
 
 function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -18,9 +18,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const [DiaSeleccionado, setDiaSeleccionado] = useState(1);
   const [loading, setLoading] = useState(false);
   const [mesActual, setMesActual] = useState(0);
-  const [diasDelMesSeleccionado, setDiasDelMesSeleccionado] = useState([]);
-  const [camposIncompletosAlerta, setCamposIncompletosAlerta] = useState(false);
-  const [reservaRepetidaAlerta, setReservaRepetidaAlerta] = useState(false);
 
   useEffect(() => {
     // Filtrar reservas y actualizar estado
@@ -52,14 +49,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const handleHoraChange = (event) => {
     setSelectedHora(event.target.value);
   };
-
-  const handleMesSelectChangeModal = (event) => {
-    const MesSeleccionadoValue = event.target.value;
-    setMesSeleccionado2(MesSeleccionadoValue);
-    const diasDelMesSeleccionado = dias.filter(dia => dia.mes === MesSeleccionadoValue);
-    setDiasDelMesSeleccionado(diasDelMesSeleccionado);
-  };
-
 
   // Generar las reservas de una en una
   const generarReserva = (id_peluquero, id_dia, hora, estado, mes) => {
@@ -98,41 +87,26 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
     setMesSeleccionado2(MesSeleccionadoValue);
   };
 
-
-  const diasDelMesModal = () => {
-    const currentDate = new Date().getDate();
-    const mesActualIndex = meses.findIndex(month => month === MesSeleccionado2);
-
-    if (mesActualIndex === mesActual) {
-      return Array.from({ length: 31 - currentDate + 1 }, (_, i) => currentDate + i);
-    } else {
-      return Array.from({ length: 31 }, (_, i) => i + 1);
-    }
-  };
-
-
-
-
   // Generar las reservas por mes
   const generarReservasPorMes = () => {
     setLoading(true);
     const mesActual = new Date().getMonth();
     const currentDate = new Date().getDate();
-
+  
     const selectedmeses = meses.slice(mesActual); // Obtener los meses desde el mes actual hasta diciembre
-
+  
     const arraysDeHoras = separarHoras(plantilla);
-
+  
     for (let i = 0; i < peluqueros.length; i++) {
       const peluquero = peluqueros[i];
       const horasDelPeluquero = arraysDeHoras[i];
       let diasParaGenerar = dias;
-
+  
       // Si el mes seleccionado es el mes actual entonces empiezo a generar reservas desde el día actual
       if (MesSeleccionado2 === meses[mesActual]) {
         diasParaGenerar = dias.filter(dia => parseInt(dia.id_dias) >= currentDate);
       }
-
+  
       for (const dia of diasParaGenerar) {
         for (const hora of horasDelPeluquero) {
           if (selectedmeses.includes(MesSeleccionado2)) { // Solo generar reservas para el mes seleccionado o meses posteriores
@@ -141,48 +115,13 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
         }
       }
     }
-
+  
     setReservasGeneradas(true);
     setTimeout(() => {
       setReservasGeneradas(false);
       setLoading(false);
     }, 10000);
   };
-
-  const generarReservaUnica = (id_peluquero, id_dia, hora, mes) => {
-    const nuevaReserva = `${id_peluquero}-${id_dia}-${hora}-${mes}`;
-  
-    // Verificar si la reserva ya existe haciendo una solicitud al servidor
-    axios.get(`${REPETIDORESERVAS}?nuevaReserva=${nuevaReserva}`)
-      .then(response => {
-        if (response.data.duplicada) {
-          setReservaRepetidaAlerta(true);
-          setTimeout(() => {
-            setReservaRepetidaAlerta(false);
-          }, 1500);
-        } else {
-          // Si no existe, insertar la reserva
-          axios.post(INSERTARRESERVAS, {
-            id_peluquero: id_peluquero,
-            id_dia: id_dia,
-            hora: hora,
-            estado: 0,
-            mes: mes
-          })
-            .then(res => {
-              console.log(res.data);
-              setReservasRegistradas(prevReservas => new Set(prevReservas.add(nuevaReserva)));
-            })
-            .catch(error => {
-              console.error('Error al insertar reserva:', error);
-            });
-        }
-      })
-      .catch(error => {
-        console.error('Error al verificar reserva duplicada:', error);
-      });
-  };
-  
 
   // Busco el nombre del peluquero para la reserva
   const nombrePeluquero = (id_peluquero) => {
@@ -194,18 +133,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   const separarHoras = (plantilla) => {
     return plantilla.map(p => p.hora.split(","));
   };
-
-  // Función para manejar la generación de reservas en la ventana modal
-  const handleGenerarReservasModal = () => {
-    if (!selectedPeluquero || !selectedHora || !MesSeleccionado2 || !DiaSeleccionado) {
-      alert('Por favor, complete todos los campos antes de generar reservas.');
-      return;
-    }
-
-    generarReservasPorMes();
-    toggleModal();
-  };
-
 
   // Cancelo la reserva
   const cancelarReserva = (id_reserva) => {
@@ -271,7 +198,7 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
               )
             ))}
           </select>
-        </div>
+      </div>
         <div className='filter-select'>
           <strong>Selecciona un día:</strong>&nbsp; &nbsp;
           <select name="diasReserva" value={DiaSeleccionado} onChange={handleDiaSelectChange}>
@@ -316,7 +243,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
           </select>
         </div>
       </div>
-      <Button onClick={generarReservasPorMes}>Generar Reservas</Button><br></br><br></br>
       <Button onClick={toggleModal}>Generar reservas con filtro</Button>
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Seleccionar peluquero y hora</ModalHeader>
@@ -344,20 +270,11 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
                 </FormGroup>
                 <FormGroup>
                   <Label for="selectMes">Mes:</Label>
-                  <Input type="select" name="selectMes" id="selectMes" value={MesSeleccionado2} onChange={handleMesSelectChangeModal}>
+                  <Input type="select" name="selectMes" id="selectMes" value={MesSeleccionado2} onChange={handleMesSelectChange2}>
                     {meses.slice(mesActual).map((month, index) => (
                       <option key={index} value={month}>
                         {month.charAt(0).toUpperCase() + month.slice(1)}
                       </option>
-                    ))}
-                  </Input>
-
-                </FormGroup>
-                <FormGroup>
-                  <Label for="selectDia">Día:</Label>
-                  <Input type="select" name="selectDia" id="selectDia" value={DiaSeleccionado} onChange={handleDiaSelectChange}>
-                    {diasDelMesModal().map(dia => (
-                      <option key={dia} value={dia}>{dia}</option>
                     ))}
                   </Input>
                 </FormGroup>
@@ -365,21 +282,12 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
             )}
           </Form>
         </ModalBody>
-        {camposIncompletosAlerta && (
-          <Alert color="danger">
-            Por favor, complete todos los campos antes de generar reservas.
-          </Alert>
-        )}
         <ModalFooter>
           <Button color="primary" onClick={() => {
-            if (!selectedPeluquero || !selectedHora || !MesSeleccionado2 || !DiaSeleccionado) {
-              setCamposIncompletosAlerta(true);
-              return;
-            }
-            generarReservaUnica(selectedPeluquero, DiaSeleccionado, selectedHora, MesSeleccionado2);
+            generarReservasPorMes();
             toggleModal();
-          }}>Generar Reserva</Button>{' '}
-
+          }}>Generar Reservas</Button>{' '}
+          <Button color="secondary" onClick={toggleModal}>Cancelar</Button>
         </ModalFooter>
       </Modal>
       {loading && <Alert color="success"><span>Generando reservas...</span><img id='imagenCarga' src={`${process.env.PUBLIC_URL}/${"carga.gif"}`} alt="Cargando" /></Alert>}

@@ -1,36 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Alert, Badge } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Button, Alert } from 'reactstrap';
 import axios from "axios";
 import { EDITARRESERVAS } from './datos';
 
-function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual }) {
+function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual}) {
   const [modalOpen, setModalOpen] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
   const [nombre, setNombre] = useState('');
   const [telefono, setTelefono] = useState('');
   const [alerta, setAlerta] = useState(false);
-  const [DiaSeleccionado, setDiaSeleccionado] = useState(1); // Filtro día que comienza en 1 para los días
-  const [MesSeleccionado, setMesSeleccionado] = useState("enero"); // Filtro mes que empieza en enero
+  const [DiaSeleccionado, setDiaSeleccionado] = useState(1); //Filtro dia que comienza en 1 para los dias
+  const [MesSeleccionado, setMesSeleccionado] = useState("enero"); //Filtro mes que empieza en enero
   const [reservasFiltradas, setReservasFiltradas] = useState([]);
 
-  // Abre/Cierra Ventana modal
+  //Abre/Cierra Ventana modal
   const toggleModal = () => {
     setModalOpen(!modalOpen);
   };
 
-  // Llamada a la modal
+  //Llamadar a la modal
   const handleReservarClick = (reserva) => {
     setReservaSeleccionada(reserva);
     toggleModal();
   };
 
-  // Filtrar las reservas por el día seleccionado
+
+   //Filtrar las reservas por el día seleccionado al principio en 1
   useEffect(() => {
     const filteredReservas = reservas.filter(r => parseInt(r.id_dias) === DiaSeleccionado && r.mes === MesSeleccionado);
     setReservasFiltradas(filteredReservas);
   }, [reservas, DiaSeleccionado, MesSeleccionado]);
 
-  // Cuando le doy click confirmo la reserva
+
+  //Cuando le doy click confirmo la reserva
   const handleReservaConfirmada = () => {
     if (nombre.trim() === '' || telefono.trim() === '') {
       setAlerta(true);
@@ -42,12 +44,12 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual }
           nombre: nombre.trim(),
           telefono: telefono.trim(),
           estado: "1"
-        };
+        }
 
         axios.put(EDITARRESERVAS, datosActualizar)
           .then(response => {
             console.log('Datos actualizados correctamente:', response.data);
-            fetchReservas(); // Actualizar las reservas para que al confirmar desaparezcan
+            fetchReservas(); //Actualizar las reservas para que al confirmar desaparezcan
           })
           .catch(error => {
             console.error('Error al actualizar datos:', error);
@@ -57,21 +59,21 @@ function VistaCliente({ peluqueros, reservas, dias, fetchReservas, fechaActual }
     }
   };
 
-  // Filtro por el mes
-const handleMesSelectChange = (event) => {
-  const MesSeleccionadoValue = event.target.value;
-  setMesSeleccionado(MesSeleccionadoValue);
-};
-
-
-  // Función para manejar el click en los badges de día
-  const handleBadgeClick = (dia) => {
-    setDiaSeleccionado(dia);
+  //Filtro por el dia
+  const handleSelectChange = (event) => {
+    const DiaSeleccionadoInt = parseInt(event.target.value);
+    setDiaSeleccionado(DiaSeleccionadoInt);
   };
 
-  // Función para obtener los días correspondientes al mes seleccionado
+    //Filtro por el mes
+  const handleMesSelectChange = (event) => {
+    const MesSeleccionadoValue = event.target.value;
+    setMesSeleccionado(MesSeleccionadoValue);
+  };
+
+  //Obtener los dias correspondientes al mes seleccionado
   const diasDelMes = () => {
-    switch (MesSeleccionado) {
+    switch(MesSeleccionado) {
       case 'febrero':
         return Array.from({ length: 28 }, (_, i) => i + 1);
       case 'abril':
@@ -90,6 +92,14 @@ const handleMesSelectChange = (event) => {
       <div className='mesSeleccionado'>
         <p><strong>Mes seleccionado:</strong> {MesSeleccionado}</p>
       </div>
+      <div className='diasSeleccion'>
+        <strong>Selecciona un día:</strong>&nbsp; &nbsp;
+        <select name="diasReserva" value={DiaSeleccionado} onChange={handleSelectChange}>
+          {diasDelMes().map(dia => (
+            <option key={dia} value={dia}>{dia}</option>
+          ))}
+        </select>
+      </div>
       <div className='mesSeleccion'>
         <strong>Selecciona un mes:</strong>&nbsp; &nbsp;
         <select name="mesReserva" value={MesSeleccionado} onChange={handleMesSelectChange}>
@@ -106,18 +116,6 @@ const handleMesSelectChange = (event) => {
           <option key={"noviembre"} value={"noviembre"}>Noviembre</option>
           <option key={"diciembre"} value={"diciembre"}>Diciembre</option>
         </select>
-      </div>
-      <div id='badges'>
-        {diasDelMes().map(dia => (
-          <Badge
-            key={dia}
-            color={DiaSeleccionado === dia ? "secondary" : "primary"}
-            onClick={() => handleBadgeClick(dia)}
-            style={{ cursor: "pointer", marginRight: "5px" , padding: "0.5rem"}}
-          >
-            {dia}
-          </Badge>
-        ))}
       </div>
       <div id='contenedorReservas'>
         {peluqueros.map(p => (

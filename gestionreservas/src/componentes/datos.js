@@ -6,5 +6,6 @@ export const EDITARRESERVAS = "https://thematic-learning.com/2DAW2024/FERNANDO/G
 export const INSERTARRESERVAS = "https://thematic-learning.com/2DAW2024/FERNANDO/GestionReservas/php/insertarReservas.php";
 export const EDITARESTADORESERVAS = "https://thematic-learning.com/2DAW2024/FERNANDO/GestionReservas/php/editarEstadoReserva.php";
 export const BORRARRESERBAS = "https://thematic-learning.com/2DAW2024/FERNANDO/GestionReservas/php/borrarReservas.php";
+export const REPETIDORESERVAS = "http://localhost/Proyectos/JSServer/php/repetidoReservas.php"
 
 
