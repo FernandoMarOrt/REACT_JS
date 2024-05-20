@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Alert, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input } from 'reactstrap';
+import { Button, Alert } from 'reactstrap';
 import axios from 'axios';
 import { INSERTARRESERVAS, EDITARESTADORESERVAS, BORRARRESERBAS } from './datos';
 
 function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedPeluquero, setSelectedPeluquero] = useState('');
-  const [selectedHora, setSelectedHora] = useState('');
   const [reservasGeneradas, setReservasGeneradas] = useState(false);
   const [reservasActualizadas, setReservasActualizadas] = useState([]);
   const [borrarAlert, setBorrarAlert] = useState(false);
@@ -34,21 +31,6 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
     setMesSeleccionado2(meses[mesActual]);
     setMeses(meses);
   }, []);
-
-  // Función para abrir y cerrar la modal
-  const toggleModal = () => {
-    setModalOpen(!modalOpen);
-  };
-
-  // Función para manejar el cambio en la selección del peluquero
-  const handlePeluqueroChange = (event) => {
-    setSelectedPeluquero(event.target.value);
-  };
-
-  // Función para manejar el cambio en la selección de la hora
-  const handleHoraChange = (event) => {
-    setSelectedHora(event.target.value);
-  };
 
   // Generar las reservas de una en una
   const generarReserva = (id_peluquero, id_dia, hora, estado, mes) => {
@@ -243,53 +225,8 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
           </select>
         </div>
       </div>
-      <Button onClick={toggleModal}>Generar reservas con filtro</Button>
-      <Modal isOpen={modalOpen} toggle={toggleModal}>
-        <ModalHeader toggle={toggleModal}>Seleccionar peluquero y hora</ModalHeader>
-        <ModalBody>
-          <Form>
-            <FormGroup>
-              <Label for="selectPeluquero">Peluquero:</Label>
-              <Input type="select" name="selectPeluquero" id="selectPeluquero" value={selectedPeluquero} onChange={handlePeluqueroChange}>
-                <option value="">Seleccionar peluquero</option>
-                {peluqueros.map(peluquero => (
-                  <option key={peluquero.id_peluquero} value={peluquero.id_peluquero}>{peluquero.nombre}</option>
-                ))}
-              </Input>
-            </FormGroup>
-            {selectedPeluquero && (
-              <>
-                <FormGroup>
-                  <Label for="selectHora">Hora:</Label>
-                  <Input type="select" name="selectHora" id="selectHora" value={selectedHora} onChange={handleHoraChange}>
-                    <option value="">Seleccionar hora</option>
-                    {selectedPeluquero && plantilla[peluqueros.findIndex(p => p.id_peluquero === selectedPeluquero)].hora.split(',').map((hora, index) => (
-                      <option key={index} value={hora}>{hora}</option>
-                    ))}
-                  </Input>
-                </FormGroup>
-                <FormGroup>
-                  <Label for="selectMes">Mes:</Label>
-                  <Input type="select" name="selectMes" id="selectMes" value={MesSeleccionado2} onChange={handleMesSelectChange2}>
-                    {meses.slice(mesActual).map((month, index) => (
-                      <option key={index} value={month}>
-                        {month.charAt(0).toUpperCase() + month.slice(1)}
-                      </option>
-                    ))}
-                  </Input>
-                </FormGroup>
-              </>
-            )}
-          </Form>
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={() => {
-            generarReservasPorMes();
-            toggleModal();
-          }}>Generar Reservas</Button>{' '}
-          <Button color="secondary" onClick={toggleModal}>Cancelar</Button>
-        </ModalFooter>
-      </Modal>
+      <Button onClick={generarReservasPorMes}>Generar Reservas</Button><br></br><br></br>
+      <Button>Generar reservas con filtro</Button>
       {loading && <Alert color="success"><span>Generando reservas...</span><img id='imagenCarga' src={`${process.env.PUBLIC_URL}/${"carga.gif"}`} alt="Cargando" /></Alert>}
       <p><br></br>
         <Button onClick={onVolverClick}>Volver a la vista cliente</Button>
