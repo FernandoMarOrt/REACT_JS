@@ -150,38 +150,39 @@ function VistaAdmin({ peluqueros, dias, plantilla, onVolverClick, reservas }) {
   };
 
   const generarReservaUnica = (id_peluquero, id_dia, hora, mes) => {
-    const nuevaReserva = `${id_peluquero}-${id_dia}-${hora}-${mes}`;
-  
-    // Verificar si la reserva ya existe haciendo una solicitud al servidor
-    axios.get(`${REPETIDORESERVAS}?nuevaReserva=${nuevaReserva}`)
-      .then(response => {
-        if (response.data.duplicada) {
-          setReservaRepetidaAlerta(true);
-          setTimeout(() => {
-            setReservaRepetidaAlerta(false);
-          }, 1500);
-        } else {
-          // Si no existe, insertar la reserva
-          axios.post(INSERTARRESERVAS, {
-            id_peluquero: id_peluquero,
-            id_dia: id_dia,
-            hora: hora,
-            estado: 0,
-            mes: mes
-          })
-            .then(res => {
-              console.log(res.data);
-              setReservasRegistradas(prevReservas => new Set(prevReservas.add(nuevaReserva)));
-            })
-            .catch(error => {
-              console.error('Error al insertar reserva:', error);
-            });
-        }
+  const nuevaReserva = `${id_peluquero}-${id_dia}-${hora}-${mes}`;
+
+  console.log(id_dia)
+  // Verificar si la reserva ya existe en los datos existentes de reservas
+  const reservaExistente = reservas.find(r =>
+    r.id_peluquero === id_peluquero &&
+    r.hora === hora && 
+    r.mes === mes &&
+    r.id_dia === id_dia
+  );
+
+  if (reservaExistente) {
+    // Mostrar una alerta indicando que la reserva ya está ocupada
+    alert('El peluquero ya tiene una reserva en esa fecha y hora.');
+  } else {
+    // Si no existe, insertar la reserva
+    axios.post(INSERTARRESERVAS, {
+      id_peluquero: id_peluquero,
+      id_dia: id_dia,
+      hora: hora,
+      estado: 0,
+      mes: mes
+    })
+      .then(res => {
+        console.log(res.data);
+        setReservasRegistradas(prevReservas => new Set(prevReservas.add(nuevaReserva)));
       })
       .catch(error => {
-        console.error('Error al verificar reserva duplicada:', error);
+        console.error('Error al insertar reserva:', error);
       });
-  };
+  }
+};
+
   
 
   // Busco el nombre del peluquero para la reserva
